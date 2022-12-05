@@ -1,4 +1,4 @@
-﻿namespace ArticleApp.Models
+﻿namespace ArticleApp.Models.Articles
 {
     public class ArticleRepository : IArticleRepository
     {
