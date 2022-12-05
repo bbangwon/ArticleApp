@@ -1,40 +1,61 @@
-﻿namespace ArticleApp.Models.Articles
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ArticleApp.Models.Articles
 {
     public class ArticleRepository : IArticleRepository
     {
-        public Task<Article> AddAsync(Article article)
+        private readonly ArticleAppDbContext context;
+
+        public ArticleRepository(ArticleAppDbContext context)
         {
-            throw new NotImplementedException();
+            this.context = context;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task<Article> AddAsync(Article model)
         {
-            throw new NotImplementedException();
+            context.Articles.Add(model);
+            await context.SaveChangesAsync();
+            return model;
+        }
+        public async Task<List<Article>> GetAllAsync()
+        {
+            return await context.Articles.ToListAsync();
+        }
+        public async Task<Article?> GetByIdAsync(int id)
+        {
+            return await context.Articles.FindAsync(id);
         }
 
-        public Task<List<Article>> GetAllAsync()
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await GetByIdAsync(id);
+
+            if(entity != null)
+            {
+                context.Articles.Remove(entity);
+                await context.SaveChangesAsync();
+            }           
         }
 
-        public Task<Article> GetByIdAsync(int id)
+        public async Task<Article> UpdateAsync(Article model)
         {
-            throw new NotImplementedException();
+            context.Articles.Update(model);
+            await context.SaveChangesAsync();
+            return model;
         }
 
-        public Task<Article> UpdateAsync(Article article)
+        public async Task<List<Article>> GetPageAsync(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            return await context.Articles
+                .OrderByDescending(m => m.Id)
+                .Skip(pageIndex)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
-        public Task<List<Article>> GetPageAsync(int pageIndex, int pageSize)
+        public async Task<int> GetTotalRecordsCountAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> GetTotalRecordsCountAsync()
-        {
-            throw new NotImplementedException();
+            return await context.Articles.CountAsync();
         }
     }
 }
