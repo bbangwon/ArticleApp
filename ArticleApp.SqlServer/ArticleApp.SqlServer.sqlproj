@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>Article.SqlServer</Name>
+    <Name>ArticleApp.SqlServer</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{db901de3-4cb5-467b-af33-45351969f3d0}</ProjectGuid>
@@ -63,6 +63,6 @@
     <Build Include="dbo\Tables\Articles.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Article.SqlServer.publish.xml" />
+    <None Include="ArticleApp.SqlServer.publish.xml" />
   </ItemGroup>
 </Project>

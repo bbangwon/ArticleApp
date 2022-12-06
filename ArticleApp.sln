@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArticleApp.Models", "ArticleApp.Models\ArticleApp.Models.csproj", "{5A16F54B-B043-4875-BD87-A423090A3EE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArticleApp.Models", "ArticleApp.Models\ArticleApp.Models.csproj", "{5A16F54B-B043-4875-BD87-A423090A3EE0}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Article.SqlServer", "Article.SqlServer\Article.SqlServer.sqlproj", "{DB901DE3-4CB5-467B-AF33-45351969F3D0}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ArticleApp.SqlServer", "ArticleApp.SqlServer\ArticleApp.SqlServer.sqlproj", "{DB901DE3-4CB5-467B-AF33-45351969F3D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArticleApp.Models.Tests", "ArticleApp.Models.Tests\ArticleApp.Models.Tests.csproj", "{7D8B1467-A322-4A74-B075-79E9C28D67FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArticleApp.Models.Tests", "ArticleApp.Models.Tests\ArticleApp.Models.Tests.csproj", "{7D8B1467-A322-4A74-B075-79E9C28D67FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArticleApp", "ArticleApp\ArticleApp.csproj", "{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{7D8B1467-A322-4A74-B075-79E9C28D67FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D8B1467-A322-4A74-B075-79E9C28D67FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D8B1467-A322-4A74-B075-79E9C28D67FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
