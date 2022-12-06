@@ -1,6 +1,6 @@
 ﻿using BWBlazor;
 
-namespace ArticleApp.Models.Articles
+namespace ArticleApp.Models
 {
     public interface IArticleRepository
         : IPagerRepository<Article>

@@ -1,5 +1,4 @@
-﻿using ArticleApp.Models.Articles;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ArticleApp.Models.Tests
 {

@@ -1,5 +1,4 @@
-﻿using ArticleApp.Models.Articles;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 
 namespace ArticleApp.Models

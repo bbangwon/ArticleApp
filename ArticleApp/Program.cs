@@ -1,7 +1,6 @@
 using ArticleApp.Areas.Identity;
 using ArticleApp.Data;
 using ArticleApp.Models;
-using ArticleApp.Models.Articles;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

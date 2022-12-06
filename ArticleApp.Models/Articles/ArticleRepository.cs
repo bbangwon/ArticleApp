@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ArticleApp.Models.Articles
+namespace ArticleApp.Models
 {
     public class ArticleRepository : IArticleRepository
     {

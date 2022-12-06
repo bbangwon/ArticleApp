@@ -1,7 +1,7 @@
 ﻿using ArticleApp.Models.Common;
 using System.ComponentModel.DataAnnotations;
 
-namespace ArticleApp.Models.Articles
+namespace ArticleApp.Models
 {
     /// <summary>
     /// Article 모델 클래스: Articles 테이블과 일대일로 매핑
