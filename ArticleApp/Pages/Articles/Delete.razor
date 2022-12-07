@@ -1,8 +1,57 @@
 ﻿@page "/Articles/Delete/{Id:int}"
 
+@inject NavigationManager NavigationManager
+@inject IArticleRepository ArticleRepository
+@inject IJSRuntime JSRuntime
+
 <h3>Delete</h3>
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row mb-3">
+                <label for="id" class="col-sm-2 col-form-label">ID: </label> @Model.Id
+            </div>
+            <div class="row mb-3">
+                <label for="Title" class="col-sm-2 col-form-label">Title: </label> @Model.Title
+            </div>
+            <div class="row mb-3">
+                @Model.Content
+            </div>
+
+            <div class="col">
+                <a href="/Articles/Delete/@Model.Id" class="btn btn-danger" @onclick="btnDelete_Click">Delete</a>
+                <a href="/Articles/Details/@Model.Id" class="btn btn-primary">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    public Article Model { get; set; } = new Article();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await ArticleRepository.GetByIdAsync(Id) ?? new Article();
+    }
+
+    protected async void btnDelete_Click()
+    {
+        bool isDelete = await JSRuntime.InvokeAsync<bool>("confirm", $"{Id}번 글을 정말로 삭제하시겠습니까?");
+
+        if (isDelete)
+        {
+            await ArticleRepository.DeleteAsync(Id);
+            NavigationManager.NavigateTo("/Articles");            
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "취소되었습니다.");
+        }
+    }
 }
