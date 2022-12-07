@@ -1,5 +1,42 @@
-﻿<h3>ArticlePager</h3>
+﻿@using BWBlazor;
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(PagerModel!.Previousable?"":"disabled")"><a class="page-link" @onclick="OnPreviousButtonClicked">Previous</a></li>
+
+        @for (int i = PagerModel!.StartNumber; i <= PagerModel!.EndNumber; i++)
+        {
+            int cur = i;
+            string active = PagerModel.Number == i ? "active" : "";
+
+            <li class="page-item @active"><a class="page-link" @onclick="(()=>PagerButtonClicked(cur))">@i</a></li>
+        }
+        <li class="page-item @(PagerModel!.Nextable?"":"disabled")"><a class="page-link" @onclick="OnNextButtonClicked">Next</a></li>
+    </ul>
+</nav>
 
 @code {
+    [Parameter]
+    public PagerModel? PagerModel { get; set; }
 
+    [Parameter]
+    public Action<int>? PageIndexChanged { get; set; }
+
+    protected void PagerButtonClicked(int page)
+    {
+        PagerModel!.Number = page;
+        PageIndexChanged?.Invoke(PagerModel!.Number);
+    }
+
+    protected void OnPreviousButtonClicked()
+    {
+        PagerModel!.Number = PagerModel!.StartNumber - 1;
+        PageIndexChanged?.Invoke(PagerModel!.Number);
+    }
+
+    protected void OnNextButtonClicked()
+    {
+        PagerModel!.Number = PagerModel!.EndNumber + 1;
+        PageIndexChanged?.Invoke(PagerModel!.Number);
+    }
 }

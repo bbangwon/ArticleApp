@@ -48,7 +48,7 @@ namespace ArticleApp.Models
         {
             return await context.Articles
                 .OrderByDescending(m => m.Id)
-                .Skip(pageIndex)
+                .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }

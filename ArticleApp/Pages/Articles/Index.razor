@@ -2,6 +2,8 @@
 @page "/Articles/Index"
 
 @using ArticleApp.Data
+@using ArticleApp.Pages.Articles.Components
+@using BWBlazor;
 
 @inject IArticleRepository ArticleRepository
 
@@ -44,11 +46,35 @@ else
     </table>
 }
 
+<ArticlePager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></ArticlePager>
+
 @code {
     private List<Article>? articles;
 
+    private PagerModel pagerModel = new PagerModel()
+    {
+        Size = 2,
+        ButtonCount = 5
+    };
+
     protected override async Task OnInitializedAsync()
     {
-        articles = await ArticleRepository.GetAllAsync();
+        pagerModel.RecordCount = await ArticleRepository.GetTotalRecordsCountAsync();
+        LoadPages();
+    }
+
+    async void LoadPages()
+    {
+        articles = await ArticleRepository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+        StateHasChanged();
+    }
+
+    void OnPageIndexChanged(int pageNumber)
+    {
+        LoadPages();
     }
 }
+
+
+
+
