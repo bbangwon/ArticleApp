@@ -10,20 +10,21 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <EditForm Model="Model" OnValidSubmit="btnSubmit_Click">
-                <div class="row mb-3">
-                    <label for="id" class="col-sm-2 col-form-label">ID: </label> @Model.Id
-                </div>
-                <div class="row mb-3">
-                    <label for="Title" class="col-sm-2 col-form-label">Title: </label> @Model.Title
-                </div>
+            <div class="row mb-3">
+                <label for="id" class="col-sm-2 col-form-label">ID: </label> @Model.Id
+            </div>
+            <div class="row mb-3">
+                <label for="Title" class="col-sm-2 col-form-label">Title: </label> @Model.Title
+            </div>
+            <div class="row mb-3">                
+                @Model.Content
+            </div>
 
-                <div class="col">
-                    <a href="/Articles/Edit/@Model.Id" class="btn btn-primary">Edit</a>
-                    <a href="/Articles/Delete/@Model.Id" class="btn btn-danger">Delete</a>
-                    <a href="/Articles" class="btn btn-secondary">List</a>
-                </div>
-            </EditForm>
+            <div class="col">
+                <a href="/Articles/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+                <a href="/Articles/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+                <a href="/Articles" class="btn btn-secondary">List</a>
+            </div>
         </div>
     </div>
 </div>
@@ -37,12 +38,5 @@
     protected override async Task OnInitializedAsync()
     {
         Model = await ArticleRepository.GetByIdAsync(Id) ?? new Article();
-    }
-
-    protected async Task btnSubmit_Click()
-    {
-        await ArticleRepository.AddAsync(Model);
-
-        NavigationManager.NavigateTo("/Articles");
     }
 }

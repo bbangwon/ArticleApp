@@ -1,8 +1,57 @@
 ﻿@page "/Articles/Edit/{Id:int}"
 
+@inject NavigationManager NavigationManager
+@inject IArticleRepository ArticleRepository
+
 <h3>Edit</h3>
+
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <EditForm Model="Model" OnValidSubmit="btnEdit_Click">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <ValidationSummary></ValidationSummary>
+                <div class="row mb-3">
+                    <label for="id" class="col-sm-2 col-form-label">ID: </label> @Model.Id
+                </div>
+                <div class="row mb-3">
+                    <label for="Title" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-10">
+                        <InputText id="Title" class="form-control" placeholder="Enter Title" @bind-Value="Model.Title"></InputText>
+                        <ValidationMessage For="@(() => Model!.Title)"></ValidationMessage>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="Content" class="col-sm-2 col-form-label">Content</label>
+                    <div class="col-sm-10">
+                        <InputTextArea id="Content" class="form-control" placeholder="Enter Content" @bind-Value="Model.Content"></InputTextArea>
+                        <ValidationMessage For="@(() => Model!.Content)"></ValidationMessage>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit</button>
+                <a href="/Articles" class="btn btn-secondary">List</a>
+            </EditForm>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    public Article Model { get; set; } = new Article();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await ArticleRepository.GetByIdAsync(Id) ?? new Article();
+    }
+
+    protected async Task btnEdit_Click()
+    {
+        await ArticleRepository.UpdateAsync(Model);
+
+        NavigationManager.NavigateTo($"/Articles/Details/{Id}");
+    }
 }

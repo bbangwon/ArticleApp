@@ -18,6 +18,13 @@
                         <ValidationMessage For="@(() => Model!.Title)"></ValidationMessage>
                     </div>
                 </div>
+                <div class="row mb-3">
+                    <label for="Content" class="col-sm-2 col-form-label">Content</label>
+                    <div class="col-sm-10">
+                        <InputTextArea id="Content" class="form-control" placeholder="Enter Content" @bind-Value="Model.Content"></InputTextArea>
+                        <ValidationMessage For="@(() => Model!.Content)"></ValidationMessage>
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <a href="/Articles" class="btn btn-secondary">List</a>
             </EditForm>
