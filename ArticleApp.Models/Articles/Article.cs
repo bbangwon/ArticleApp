@@ -20,7 +20,15 @@ namespace ArticleApp.Models
         [Required(ErrorMessage = "제목을 입력하세요.")]
         public string? Title { get; set; }
 
+        /// <summary>
+        /// 내용
+        /// </summary>
         [Required(ErrorMessage = "내용을 입력하세요.")]
         public string? Content { get; set; }
+
+        /// <summary>
+        /// 공지글로 올리기
+        /// </summary>
+        public bool IsPinned { get; set; } = false;
     }
 }

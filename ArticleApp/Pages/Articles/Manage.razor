@@ -2,6 +2,133 @@
 
 <h3>Manage</h3>
 
-@code {
+@using ArticleApp.Data
+@using ArticleApp.Pages.Articles.Components
+@using BWBlazor;
 
+@inject IArticleRepository ArticleRepository
+
+@inject IJSRuntime jsRuntime;
+
+<div>
+    <a href="/Articles/Create" class="btn btn-primary">Create</a>
+</div>
+
+@if (articles == null)
+{
+    <p><em>Loading...</em></p>
 }
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>IsPinned</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in articles)
+            {
+                <tr>
+                    <td>@article.Id</td>
+                    <td>@article.Title</td>
+                    <td>@article.Created.ToShortTimeString()</td>
+                    <td>@(article.IsPinned ? "공지" : "")</td>
+                    <td>
+                        <a href="/Articles/Details/@article.Id" class="btn btn-light">Details</a>
+                        <a href="/Articles/Edit/@article.Id" class="btn btn-light">Edit</a>
+                        <a href="/Articles/Delete/@article.Id" class="btn btn-light">Delete</a>
+                    </td>
+                    <td>
+                        <input type="button" value="공지글로 올리기" @onclick="@(() => PinnedBy(article))" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<ArticlePager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></ArticlePager>
+
+@if (this.isShow)
+{
+    <div id="pinnedPopup" class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">공지글로 올리기</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="btnClose_Click"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@(article.Id)를 공지글로 설정할까요?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="btnClose_Click">최소</button>
+                    <button type="button" class="btn btn-primary" @onclick="btnTogglePinned_Click">설정</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Article article = new Article();
+
+    private bool isShow = false;
+
+    private void PinnedBy(Article article)
+    {
+        this.article = article;
+        this.isShow = true;
+        //jsRuntime.InvokeVoidAsync("alert", $"{article.Id}를 공지글로 설정할까요?");
+    }
+
+    private void btnClose_Click()
+    {
+        this.isShow = false;
+        this.article = new Article();
+    }
+
+    private async void btnTogglePinned_Click()
+    {
+        this.article.IsPinned = !this.article.IsPinned;
+        await ArticleRepository.UpdateAsync(this.article);
+
+        btnClose_Click();
+        LoadPages();
+    }
+
+    private List<Article>? articles;
+
+    private PagerModel pagerModel = new PagerModel()
+    {
+        Size = 2,
+        ButtonCount = 5
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        pagerModel.RecordCount = await ArticleRepository.GetTotalRecordsCountAsync();
+        LoadPages();
+    }
+
+    async void LoadPages()
+    {
+        articles = await ArticleRepository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+        StateHasChanged();
+    }
+
+    void OnPageIndexChanged(int pageNumber)
+    {
+        LoadPages();
+    }
+}
+
+
+
+
