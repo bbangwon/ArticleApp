@@ -1,8 +1,5 @@
 ﻿@page "/Articles/Create"
 
-@inject NavigationManager NavigationManager
-@inject IArticleRepository ArticleRepository
-
 <h3>Create</h3>
 
 <div class="container">
@@ -31,14 +28,3 @@
         </div>
     </div>
 </div>
-
-@code {
-    public Article Model { get; set; } = new Article();
-
-    protected async Task btnSubmit_Click()
-    {
-        await ArticleRepository.AddAsync(Model);
-
-        NavigationManager.NavigateTo("/Articles");
-    }
-}

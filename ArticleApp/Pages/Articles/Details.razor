@@ -17,7 +17,7 @@
                 <label for="Title" class="col-sm-2 col-form-label">Title: </label> @Model.Title
             </div>
             <div class="row mb-3">                
-                @Model.Content
+                @((MarkupString)lblContent)
             </div>
 
             <div class="col">
@@ -35,8 +35,11 @@
 
     public Article Model { get; set; } = new Article();
 
+    private string lblContent = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         Model = await ArticleRepository.GetByIdAsync(Id) ?? new Article();
+        lblContent = HtmlUtil.EncodeWithTabAndSpace(Model.Content);
     }
 }

@@ -26,6 +26,7 @@ else
                 <th>ID</th>
                 <th>Title</th>
                 <th>Created</th>
+                <th>&nbsp;</th>
                 <th>IsPinned</th>
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
@@ -38,14 +39,18 @@ else
                     <td>@article.Id</td>
                     <td>@article.Title</td>
                     <td>@article.Created.ToShortTimeString()</td>
-                    <td>@(article.IsPinned ? "공지" : "")</td>
                     <td>
                         <a href="/Articles/Details/@article.Id" class="btn btn-light">Details</a>
                         <a href="/Articles/Edit/@article.Id" class="btn btn-light">Edit</a>
                         <a href="/Articles/Delete/@article.Id" class="btn btn-light">Delete</a>
                     </td>
+                    <td>@(article.IsPinned ? "공지" : "")</td>
                     <td>
                         <input type="button" value="공지글로 올리기" @onclick="@(() => PinnedBy(article))" />
+                    </td>
+                    <td>
+                        <input type="button" value="Delete" class="btn btn-danger" 
+                        data-bs-toggle="modal" data-bs-target="#articleDeleteDialog" @onclick="@(() => DeleteBy(article))" />
                     </td>
                 </tr>
             }
@@ -54,6 +59,31 @@ else
 }
 
 <ArticlePager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></ArticlePager>
+<ArticleDeleteDialog OnClick="btnDelete_Click"></ArticleDeleteDialog>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @if (this.isShow)
 {
@@ -77,6 +107,21 @@ else
 }
 
 @code {
+    private async void btnDelete_Click()
+    {
+        await ArticleRepository.DeleteAsync(this.article.Id);
+        await jsRuntime.InvokeVoidAsync("closeModal", "articleDeleteDialog");
+        this.article = new Article();
+
+        pagerModel.RecordCount = await ArticleRepository.GetTotalRecordsCountAsync();
+        LoadPages();
+    }
+
+    private void DeleteBy(Article article)
+    {
+        this.article = article;   
+    }
+
     private Article article = new Article();
 
     private bool isShow = false;

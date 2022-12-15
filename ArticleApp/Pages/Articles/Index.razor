@@ -1,11 +1,7 @@
 ﻿@page "/Articles"
 @page "/Articles/Index"
 
-@using ArticleApp.Data
 @using ArticleApp.Pages.Articles.Components
-@using BWBlazor;
-
-@inject IArticleRepository ArticleRepository
 
 <h3>Index</h3>
 
@@ -44,7 +40,11 @@ else
             {
                 <tr>
                     <td>@article.Id</td>
-                    <td>@article.Title</td>
+                    <td @onclick="@(() => btnTitle_Click(article.Id))">
+                        <a href="/Articles/Details/@article.Id">
+                            @article.Title
+                        </a>
+                    </td>
                     <td>@article.Created.ToShortTimeString()</td>
                     <td>
                         <a href="/Articles/Details/@article.Id" class="btn btn-light">Details</a>
@@ -58,34 +58,5 @@ else
 }
 
 <ArticlePager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></ArticlePager>
-
-@code {
-    private List<Article>? articles;
-
-    private PagerModel pagerModel = new PagerModel()
-    {
-        Size = 2,
-        ButtonCount = 5
-    };
-
-    protected override async Task OnInitializedAsync()
-    {
-        pagerModel.RecordCount = await ArticleRepository.GetTotalRecordsCountAsync();
-        LoadPages();
-    }
-
-    async void LoadPages()
-    {
-        articles = await ArticleRepository.GetPageAsync(pagerModel.Index, pagerModel.Size);
-        StateHasChanged();
-    }
-
-    void OnPageIndexChanged(int pageNumber)
-    {
-        LoadPages();
-    }
-}
-
-
 
 
