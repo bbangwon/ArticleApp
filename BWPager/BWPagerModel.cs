@@ -1,7 +1,8 @@
-﻿namespace BWBlazor
+﻿namespace BWPager
 {
-
-    /*
+    public class BWPagerModel
+    {
+        /*
 
     public async Task<List<Machine>> GetMachinesPageAsync(int pageIndex, int pageSize)
     {
@@ -51,11 +52,9 @@
     */
 
 
-    public class PagerModel
-    {
         public int Number { get; set; } = 1;
         public int Index => Number - 1;
-        
+
         /// <summary>
         /// 한 페이지에 몇개씩 보여줄래
         /// </summary>
@@ -125,6 +124,5 @@
                 return EndNumber < PageCount;
             }
         }
-    }
-
+    }        
 }

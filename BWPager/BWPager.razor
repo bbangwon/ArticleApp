@@ -1,23 +1,21 @@
-﻿@using BWBlazor;
-
-<nav>
+﻿<nav>
     <ul class="pagination justify-content-center">
         <li class="page-item @(PagerModel!.Previousable?"":"disabled")"><a class="page-link" @onclick="OnPreviousButtonClicked">Previous</a></li>
 
-    @for (int i = PagerModel!.StartNumber; i <= PagerModel!.EndNumber; i++)
-    {
-        int cur = i;
-        string active = PagerModel.Number == i?"active":"";
+        @for (int i = PagerModel!.StartNumber; i <= PagerModel!.EndNumber; i++)
+        {
+            int cur = i;
+            string active = PagerModel.Number == i ? "active" : "";
 
-        <li class="page-item @active"><a class="page-link" @onclick="(()=>PagerButtonClicked(cur))">@i</a></li>
-    }
+            <li class="page-item @active"><a class="page-link" @onclick="(()=>PagerButtonClicked(cur))">@i</a></li>
+        }
         <li class="page-item @(PagerModel!.Nextable?"":"disabled")"><a class="page-link" @onclick="OnNextButtonClicked">Next</a></li>
-  </ul>
+    </ul>
 </nav>
 
 @code {
     [Parameter]
-    public PagerModel? PagerModel { get; set; }
+    public BWPagerModel? PagerModel { get; set; }
 
     [Parameter]
     public Action<int>? PageIndexChanged { get; set; }

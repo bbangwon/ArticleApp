@@ -1,5 +1,5 @@
 ﻿using ArticleApp.Models;
-using BWBlazor;
+using BWPager;
 using Microsoft.AspNetCore.Components;
 
 namespace ArticleApp.Pages.Articles
@@ -14,7 +14,7 @@ namespace ArticleApp.Pages.Articles
 
         private List<Article>? articles;
 
-        private PagerModel pagerModel = new PagerModel()
+        private BWPagerModel pagerModel = new BWPagerModel()
         {
             Size = 2,
             ButtonCount = 5

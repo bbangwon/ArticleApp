@@ -1,6 +1,6 @@
-﻿namespace BWBlazor
+﻿namespace BWPager
 {
-    public interface IPagerRepository<T>
+    public interface IBWPagerRepository<T>
     {
         Task<List<T>> GetPageAsync(int pageIndex, int pageSize);
         Task<int> GetTotalRecordsCountAsync();

@@ -1,9 +1,9 @@
-﻿using BWBlazor;
+﻿using BWPager;
 
 namespace ArticleApp.Models
 {
     public interface IArticleRepository
-        : IPagerRepository<Article>
+        : IBWPagerRepository<Article>
     {
         Task<Article> AddAsync(Article model);
         Task<List<Article>> GetAllAsync();

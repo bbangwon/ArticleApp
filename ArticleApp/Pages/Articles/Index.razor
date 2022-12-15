@@ -1,6 +1,7 @@
 ﻿@page "/Articles"
 @page "/Articles/Index"
 
+@using BWPager
 @using ArticleApp.Pages.Articles.Components
 
 <h3>Index</h3>
@@ -57,6 +58,6 @@ else
     </table>
 }
 
-<ArticlePager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></ArticlePager>
+<BWPager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></BWPager>
 
 
