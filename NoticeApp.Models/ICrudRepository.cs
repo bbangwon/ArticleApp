@@ -4,7 +4,7 @@
     {
         Task<T> AddAsync(T model);
         Task<List<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(int id);
         Task<bool> UpdateAsync(T model);
         Task<bool> RemoveAsync(int id);
 

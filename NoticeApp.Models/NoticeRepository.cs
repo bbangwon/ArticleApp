@@ -1,15 +1,37 @@
-﻿namespace NoticeApp.Models
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace NoticeApp.Models
 {
     public class NoticeRepository : INoticeRepository
     {
-        public Task<Notice> AddAsync(Notice model)
+        private readonly NoticeAppDbContext dbContext;
+        private readonly ILogger logger;
+
+        public NoticeRepository(NoticeAppDbContext dbContext, ILoggerFactory loggerFactory)
         {
-            throw new NotImplementedException();
+            this.dbContext = dbContext;
+            this.logger = loggerFactory.CreateLogger<NoticeRepository>();
+        }
+
+        public async Task<Notice> AddAsync(Notice model)
+        {
+            this.dbContext.Add(model);
+            try
+            {
+                await this.dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"에러 발생({nameof(AddAsync)}): {e.Message}");
+            }
+
+            return model;
         }
 
         public Task<List<Notice>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return this.dbContext.Notices.ToListAsync();
         }
 
         public Task<List<Notice>> GetAllByParentIdAsync(int pageIndex, int pageSize, int parentId)
@@ -19,27 +41,42 @@
 
         public Task<List<Notice>> GetAllOfPageAsync(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            return this.dbContext.Notices.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
         }
 
-        public Task<Notice> GetByIdAsync(int id)
+        public Task<Notice?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return this.dbContext.Notices.FindAsync(id).AsTask();
         }
 
         public Task<int> GetCountAsync()
         {
-            throw new NotImplementedException();
+            return this.dbContext.Notices.CountAsync();
         }
 
-        public Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
-            throw new NotImplementedException();
+            var notice = GetByIdAsync(id);
+            if(notice != null)
+            {
+                this.dbContext.Remove(notice);
+                await this.dbContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
-        public Task<bool> UpdateAsync(Notice model)
+        public async Task<bool> UpdateAsync(Notice model)
         {
-            throw new NotImplementedException();
+            var notice = GetByIdAsync((int)model.Id);
+
+            if(notice != null)
+            {
+                this.dbContext.Update(model);
+                await this.dbContext.SaveChangesAsync();
+                return true;
+            }
+            return false;            
         }
     }
 }
