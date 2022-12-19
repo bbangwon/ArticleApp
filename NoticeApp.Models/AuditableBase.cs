@@ -1,4 +1,4 @@
-﻿namespace ArticleApp.Models.Common
+﻿namespace NoticeApp.Models
 {
     /// <summary>
     /// 레코드에 대한 상태 추적을 위한 4개의 속성 제공
@@ -13,7 +13,7 @@
         /// <summary>
         /// 등록일
         /// </summary>
-        public DateTime? Created { get; set; }
+        public DateTime Created { get; set; }
 
         /// <summary>
         /// 수정자
