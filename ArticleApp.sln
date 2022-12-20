@@ -19,7 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NoticeApps", "NoticeApps", 
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "NoticeApp.SqlServer", "NoticeApp.SqlServer\NoticeApp.SqlServer.sqlproj", "{F41633B8-9134-40F2-B25F-8E37E399A4F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticeApp.Models", "NoticeApp.Models\NoticeApp.Models.csproj", "{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoticeApp.Models", "NoticeApp.Models\NoticeApp.Models.csproj", "{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticeApp.Models.Tests", "NoticeApp.Models.Tests\NoticeApp.Models.Tests.csproj", "{F16A5A61-EC95-460D-BB6E-B921A2707C63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F16A5A61-EC95-460D-BB6E-B921A2707C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F16A5A61-EC95-460D-BB6E-B921A2707C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16A5A61-EC95-460D-BB6E-B921A2707C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F16A5A61-EC95-460D-BB6E-B921A2707C63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{D4AA5B3A-E0DE-40E3-9206-6FA7D463171B} = {1AE0503B-5010-4BF7-8FD1-6C3C901303D6}
 		{F41633B8-9134-40F2-B25F-8E37E399A4F2} = {A9AEB9EE-02A0-402A-8C78-E077CAB9DAD1}
 		{71F1DB55-CABC-4D9E-BE5B-4EC7909CB5EF} = {A9AEB9EE-02A0-402A-8C78-E077CAB9DAD1}
+		{F16A5A61-EC95-460D-BB6E-B921A2707C63} = {A9AEB9EE-02A0-402A-8C78-E077CAB9DAD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5352757-C4C5-45A3-A4FA-BD8D9958BF53}
