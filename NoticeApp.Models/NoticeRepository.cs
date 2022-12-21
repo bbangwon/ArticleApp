@@ -31,7 +31,9 @@ namespace NoticeApp.Models
 
         public Task<List<Notice>> GetAllAsync()
         {
-            return this.dbContext.Notices.ToListAsync();
+            return this.dbContext.Notices
+                .OrderByDescending(m => m.Id)
+                .ToListAsync();
         }
 
         public Task<List<Notice>> GetAllByParentIdAsync(int pageIndex, int pageSize, int parentId)
@@ -41,7 +43,11 @@ namespace NoticeApp.Models
 
         public Task<List<Notice>> GetAllOfPageAsync(int pageIndex, int pageSize)
         {
-            return this.dbContext.Notices.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            return this.dbContext.Notices
+                .OrderByDescending(m => m.Id)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public Task<Notice?> GetByIdAsync(int id)

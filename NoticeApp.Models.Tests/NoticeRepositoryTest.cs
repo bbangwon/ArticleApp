@@ -10,13 +10,16 @@ namespace NoticeApp.Models.Tests
         [TestMethod]
         public async Task NoticeRepositoryAllMethodTest()
         {
+            #region 준비
             var options = new DbContextOptionsBuilder<NoticeAppDbContext>()
-                    .UseInMemoryDatabase(databaseName: $"NoticeApp{Guid.NewGuid()}").Options;
+            .UseInMemoryDatabase(databaseName: $"NoticeApp{Guid.NewGuid()}").Options;
 
             var serviceProvider = new ServiceCollection().AddLogging().BuildServiceProvider();
             var factory = serviceProvider.GetService<ILoggerFactory>();
+            #endregion
 
-            using(var context = new NoticeAppDbContext(options))
+            #region AddAsync 테스트
+            using (var context = new NoticeAppDbContext(options))
             {
                 var repository = new NoticeRepository(context, factory!);
                 var model = new Notice
@@ -34,8 +37,41 @@ namespace NoticeApp.Models.Tests
                 var model = await context.Notices.Where(n => n.Id == 1).SingleOrDefaultAsync();
 
                 Assert.AreEqual("관리자", model!.Name);
+            }
+            #endregion
+
+            #region GetAllAsync 테스트
+            using (var context = new NoticeAppDbContext(options))
+            {
+                var repository = new NoticeRepository(context, factory!);
+                var model = new Notice
+                {
+                    Name = "홍길동",
+                    Title = "공지사항입니다.",
+                    Content = "내용입니다."
+                };
+
+                await repository.AddAsync(model);
+                await repository.AddAsync(new Notice
+                {
+                    Name = "백두산",
+                    Title = "공지사항입니다."
+                });
 
             }
+            using (var context = new NoticeAppDbContext(options))
+            {
+                var repository = new NoticeRepository(context, factory!);
+                var models = await repository.GetAllAsync();
+
+                Assert.AreEqual(3, models.Count);
+
+
+
+            } 
+            #endregion
+
+
         }
     }
 }
