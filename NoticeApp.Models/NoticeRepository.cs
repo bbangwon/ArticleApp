@@ -23,7 +23,7 @@ namespace NoticeApp.Models
             }
             catch (Exception e)
             {
-                logger.LogError($"에러 발생({nameof(AddAsync)}): {e.Message}");
+                logger.LogError($"ERROR ({nameof(AddAsync)}): {e.Message}");
             }
 
             return model;
@@ -33,18 +33,28 @@ namespace NoticeApp.Models
         {
             return this.dbContext.Notices
                 .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticeComments)
                 .ToListAsync();
         }
 
+
+
         public Task<List<Notice>> GetAllByParentIdAsync(int pageIndex, int pageSize, int parentId)
         {
-            throw new NotImplementedException();
+            return this.dbContext.Notices
+                .Where(m => m.ParentId == parentId)
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public Task<List<Notice>> GetAllOfPageAsync(int pageIndex, int pageSize)
         {
             return this.dbContext.Notices
                 .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -52,12 +62,25 @@ namespace NoticeApp.Models
 
         public Task<Notice?> GetByIdAsync(int id)
         {
-            return this.dbContext.Notices.FindAsync(id).AsTask();
+            return this.dbContext.Notices
+                //.Include(m => m.NoticesComments)
+                .FindAsync(id)
+                .AsTask();
         }
 
-        public Task<int> GetCountAsync()
+        public Task<int> GetTotalRecords()
         {
             return this.dbContext.Notices.CountAsync();
+        }
+
+        public Task<int> GetTotalRecords(int parentId)
+        {
+            return this.dbContext.Notices.Where(m => m.ParentId == parentId).CountAsync();
+        }
+
+        public Task<int> GetPinnedRecords(int parentId)
+        {
+            return this.dbContext.Notices.Where(m => m.ParentId == parentId && m.IsPinned == true).CountAsync();
         }
 
         public async Task<bool> RemoveAsync(int id)
@@ -66,23 +89,56 @@ namespace NoticeApp.Models
             if(notice != null)
             {
                 this.dbContext.Remove(notice);
-                await this.dbContext.SaveChangesAsync();
-                return true;
+                try
+                {
+                    return await this.dbContext.SaveChangesAsync() > 0;
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"ERROR ({nameof(RemoveAsync)}): {e.Message}");
+                }
             }
             return false;
         }
 
         public async Task<bool> UpdateAsync(Notice model)
         {
-            var notice = GetByIdAsync((int)model.Id);
+            var notice = GetByIdAsync(model.Id);
 
             if(notice != null)
             {
                 this.dbContext.Update(model);
-                await this.dbContext.SaveChangesAsync();
-                return true;
+                try
+                {
+                    return await this.dbContext.SaveChangesAsync() > 0;
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"ERROR ({nameof(UpdateAsync)}): {e.Message}");
+                }
             }
             return false;            
+        }
+
+        public async Task<bool> RemoveAllByParentIdAsync(int parentId)
+        {
+            try
+            {
+                var models = await dbContext.Notices.Where(m => m.ParentId == parentId).ToListAsync();
+
+                foreach (var model in models)
+                {
+                    dbContext.Notices.Remove(model);
+                }
+
+                return await dbContext.SaveChangesAsync() > 0;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"ERROR ({nameof(RemoveAllByParentIdAsync)}): {e.Message}");
+            }
+
+            return false;
         }
     }
 }

@@ -46,7 +46,7 @@ else
                             @article.Title
                         </a>
                     </td>
-                    <td>@article.Created.ToShortTimeString()</td>
+                    <td>@article.Created!.Value.ToShortTimeString()</td>
                     <td>
                         <a href="/Articles/Details/@article.Id" class="btn btn-light">Details</a>
                         <a href="/Articles/Edit/@article.Id" class="btn btn-light">Edit</a>

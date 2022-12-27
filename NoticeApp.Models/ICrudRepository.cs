@@ -8,7 +8,7 @@
         Task<bool> UpdateAsync(T model);
         Task<bool> RemoveAsync(int id);
 
-        Task<int> GetCountAsync();
+        Task<int> GetTotalRecords();
         Task<List<T>> GetAllOfPageAsync(int pageIndex, int pageSize);       
     }
 }

@@ -65,13 +65,28 @@ namespace NoticeApp.Models.Tests
                 var models = await repository.GetAllAsync();
 
                 Assert.AreEqual(3, models.Count);
-
-
-
             } 
             #endregion
 
+            using(var context = new NoticeAppDbContext(options))
+            {
+                int parentId = 1;
 
+                var no1 = await context.Notices.Where(m => m.Id == 1).SingleOrDefaultAsync();
+
+                no1!.ParentId = parentId;
+                no1!.IsPinned = true;
+
+                context.Update(no1);
+                context.SaveChanges();
+
+                var repository = new NoticeRepository(context, factory!);
+                var r = await repository.GetTotalRecords(parentId);
+                var p = await repository.GetPinnedRecords(parentId);
+
+                Assert.AreEqual(1, r);
+                Assert.AreEqual(1, p);
+            }
         }
     }
 }
