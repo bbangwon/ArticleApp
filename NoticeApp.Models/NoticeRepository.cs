@@ -85,7 +85,7 @@ namespace NoticeApp.Models
 
         public async Task<bool> RemoveAsync(int id)
         {
-            var notice = GetByIdAsync(id);
+            var notice = await GetByIdAsync(id);
             if(notice != null)
             {
                 this.dbContext.Remove(notice);
