@@ -103,19 +103,14 @@ namespace NoticeApp.Models
 
         public async Task<bool> UpdateAsync(Notice model)
         {
-            var notice = GetByIdAsync(model.Id);
-
-            if(notice != null)
+            try
             {
                 this.dbContext.Update(model);
-                try
-                {
-                    return await this.dbContext.SaveChangesAsync() > 0;
-                }
-                catch (Exception e)
-                {
-                    logger.LogError($"ERROR ({nameof(UpdateAsync)}): {e.Message}");
-                }
+                return await this.dbContext.SaveChangesAsync() > 0;
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"ERROR ({nameof(UpdateAsync)}): {e.Message}");
             }
             return false;            
         }
