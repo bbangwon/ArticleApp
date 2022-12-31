@@ -131,8 +131,8 @@ namespace NoticeApp.Apis.Controllers
         {
             try
             {
-                var recordCount = await repository.GetTotalRecords();
-                var models = await repository.GetAllOfPageAsync(pageIndex, pageSize);
+                var recordCount = await repository.GetTotalRecordsCountAsync();
+                var models = await repository.GetPageAsync(pageIndex, pageSize);
 
                 Response.Headers.Add("X-TotalRecordCount", recordCount.ToString());
                 Response.Headers.Add("Access-Control-Expose-Headers", "X-TotalRecordCount");

@@ -81,8 +81,8 @@ namespace NoticeApp.Models.Tests
                 context.SaveChanges();
 
                 var repository = new NoticeRepository(context, factory!);
-                var r = await repository.GetTotalRecords(parentId);
-                var p = await repository.GetPinnedRecords(parentId);
+                var r = await repository.GetTotalRecordsCountByParentIdAsync(parentId);
+                var p = await repository.GetPinnedRecordsByParentIdAsync(parentId);
 
                 Assert.AreEqual(1, r);
                 Assert.AreEqual(1, p);
@@ -133,8 +133,8 @@ namespace NoticeApp.Models.Tests
                 int pageSize = 1;
 
                 var repository = new NoticeRepository(context, factory!);
-                var articleSet = await repository.GetAllOfPageAsync(pageIndex, pageSize);
-                var recordCount = await repository.GetTotalRecords();
+                var articleSet = await repository.GetPageAsync(pageIndex, pageSize);
+                var recordCount = await repository.GetTotalRecordsCountAsync();
 
                 var firstName = articleSet.FirstOrDefault()?.Name;
 

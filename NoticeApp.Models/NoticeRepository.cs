@@ -39,20 +39,10 @@ namespace NoticeApp.Models
 
 
 
-        public Task<List<Notice>> GetAllByParentIdAsync(int pageIndex, int pageSize, int parentId)
+        public Task<List<Notice>> GetPageByParentIdAsync(int pageIndex, int pageSize, int parentId)
         {
             return this.dbContext.Notices
                 .Where(m => m.ParentId == parentId)
-                .OrderByDescending(m => m.Id)
-                //.Include(m => m.NoticesComments)
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
-
-        public Task<List<Notice>> GetAllOfPageAsync(int pageIndex, int pageSize)
-        {
-            return this.dbContext.Notices
                 .OrderByDescending(m => m.Id)
                 //.Include(m => m.NoticesComments)
                 .Skip(pageIndex * pageSize)
@@ -68,17 +58,12 @@ namespace NoticeApp.Models
                 .AsTask();
         }
 
-        public Task<int> GetTotalRecords()
-        {
-            return this.dbContext.Notices.CountAsync();
-        }
-
-        public Task<int> GetTotalRecords(int parentId)
+        public Task<int> GetTotalRecordsCountByParentIdAsync(int parentId)
         {
             return this.dbContext.Notices.Where(m => m.ParentId == parentId).CountAsync();
         }
 
-        public Task<int> GetPinnedRecords(int parentId)
+        public Task<int> GetPinnedRecordsByParentIdAsync(int parentId)
         {
             return this.dbContext.Notices.Where(m => m.ParentId == parentId && m.IsPinned == true).CountAsync();
         }
@@ -134,6 +119,21 @@ namespace NoticeApp.Models
             }
 
             return false;
+        }
+
+        public Task<List<Notice>> GetPageAsync(int pageIndex, int pageSize)
+        {
+            return this.dbContext.Notices
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<int> GetTotalRecordsCountAsync()
+        {
+            return this.dbContext.Notices.CountAsync();
         }
     }
 }
