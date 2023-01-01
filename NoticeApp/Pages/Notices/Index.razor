@@ -4,11 +4,9 @@
 @inject INoticeRepository Repository
 @inject NavigationManager NavigationManager
 
-<h3>Index</h3>
-
 <div class="row">
     <div class="col-md-12">
-        <a href="/Notice/Create" class="btn btn-primary">Create</a>
+        <a href="/Notices/Create" class="btn btn-primary">Create</a>
         <AuthorizeView>
             <Authorized>
             </Authorized>
@@ -77,7 +75,7 @@
 
     private BWPagerModel pagerModel = new BWPagerModel()
     {
-        Size = 1,
+        Size = 2,
         ButtonCount = 5
     };
 

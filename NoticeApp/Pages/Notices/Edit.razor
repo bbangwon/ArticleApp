@@ -1,10 +1,78 @@
 ﻿@page "/Notices/Edit/{Id:int}"
+@using ArticleApp.Utils;
+
+@inject INoticeRepository Repository
+@inject NavigationManager NavigationManager
 
 <h3>Edit</h3>
 
-@code {
-    protected override void OnInitialized()
-    {
+<div class="row">
+    <div class="col-md-12">
+        <EditForm Model="model" OnValidSubmit="FormSubmit">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="form-group">
+                <label for="txtName">Name</label>
+                <InputText id="txtName" class="form-control" placeholder="Enter Name" @bind-Value="model.Name"></InputText>
+                <ValidationMessage For="@(() => model.Name)" class="form-text text-muted"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label for="txtTitle">Title</label>
+                <InputText id="txtTitle" class="form-control" placeholder="Enter Title" @bind-Value="model.Title"></InputText>
+                <ValidationMessage For="@(() => model.Title)" class="form-text text-muted"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label for="txtContent">Content</label>
+                <InputTextArea id="txtContent" class="form-control" placeholder="Enter Content" @bind-Value="model.Content"></InputTextArea>
+                <ValidationMessage For="@(() => model.Content)" class="form-text text-muted"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label for="lstCategory">Parent</label>
+                <InputSelect @bind-Value="ParentId" class="form-control" id="lstCategory">
+                    <option value="">--Select Parent</option>
+                    @foreach (var p in parentIds)
+                    {
+                        <option value="@p">@p</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => ParentId)" class="form-text text-muted"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/Notices" class="btn btn-secondary">List</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
 
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    protected Notice? model = new Notice();
+
+    public string ParentId { get; set; }
+
+    protected int[] parentIds = { 1, 2, 3 };
+
+    protected string content = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await Repository.GetByIdAsync(Id);
+        content = HtmlUtil.EncodeWithTabAndSpace(model?.Content);
+        ParentId = model?.ParentId?.ToString();
     }
+
+    protected async Task FormSubmit()
+    {
+        if (int.TryParse(ParentId, out int parentId))
+        {
+            model.ParentId = parentId;
+        }
+        await Repository.UpdateAsync(model);
+        NavigationManager.NavigateTo("/Notices");
+    }
+
+
 }
