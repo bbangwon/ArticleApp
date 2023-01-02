@@ -65,6 +65,9 @@
                                 <input type="button" name="btnEdit" value="Edit with Modal"
                                    class="btn btn-primary"
                                    @onclick="(() => EditBy(m))" />
+                                <input type="button" name="btnDelete" value="Delete with Modal"
+                                   class="btn btn-danger"
+                                   @onclick="(() => DeleteBy(m))" />
                             </td>
                         </tr>
                     }
@@ -85,6 +88,8 @@
     <EditorFormTitle>@EditorFormTitle</EditorFormTitle>
 </EditorForm>
 
+<DeleteDialog @ref="DeleteDialogReference" OnClick="DeleteClick"></DeleteDialog>
+
 @code {
     public string EditorFormTitle { get; set; } = "CREATE";
 
@@ -99,13 +104,10 @@
     protected Notice model = new Notice();
 
     public EditorForm? EditorFormReference { get; set; }
+    public DeleteDialog? DeleteDialogReference { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Repository != null)
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-        }
         LoadPages();
     }
 
@@ -113,6 +115,7 @@
     {
         if (Repository != null)
         {
+            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
             models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
         }
         StateHasChanged();
@@ -132,24 +135,33 @@
     {
         EditorFormTitle = "CREATE";
         model = new Notice();
-        EditorFormReference.Show();
+        EditorFormReference?.Show();
     }
 
     protected void EditBy(Notice model)
     {
         EditorFormTitle = "EDIT";
         this.model = model;
-        EditorFormReference.Show();
+        EditorFormReference?.Show();
     }
 
-    protected async void CreateOrEdit()
+    protected async void DeleteClick()
     {
-        EditorFormReference.Hide();
+        await Repository.RemoveAsync(this.model.Id);
+        DeleteDialogReference?.Hide();
+        this.model = new Notice();
+        LoadPages();
+    }
 
-        if (Repository != null)
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-        }
+    protected void DeleteBy(Notice model)
+    {
+        this.model = model;
+        DeleteDialogReference?.Show();
+    }
+
+    protected void CreateOrEdit()
+    {
+        EditorFormReference?.Hide();
         LoadPages();
     }
 }
