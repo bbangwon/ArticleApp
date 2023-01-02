@@ -27,7 +27,7 @@ builder.Services.AddMatBlazor();
 builder.Services.AddDbContext<NoticeAppDbContext>(options =>
 {    
     options.UseSqlServer(connectionString);
-});
+}, ServiceLifetime.Transient);
 
 builder.Services.AddTransient<INoticeRepository, NoticeRepository>();
 
