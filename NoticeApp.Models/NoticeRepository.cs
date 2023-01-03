@@ -185,5 +185,31 @@ namespace NoticeApp.Models
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public Task<SortedList<int, int>> GetMonthlyCreateCountAsync()
+        {
+            SortedList<int, int> createCounts = new SortedList<int, int>();
+
+            //초기화
+            for (int i = 1; i <= 12; i++)
+            {
+                createCounts.Add(i, 0);
+            }
+
+            //현재 달부터 12개월 전까지 반복
+            for (int i = 0; i < 12; i++)
+            {
+                var current = DateTime.Now.AddMonths(-i);
+                var count = this.dbContext.Notices
+                    .AsEnumerable()     // 메모리를 많이 사용할수 있으므로 AsEnumerable
+                    .Where(m => 
+                Convert.ToDateTime(m.Created).Month == current.Month && 
+                Convert.ToDateTime(m.Created).Year == current.Year)
+                    .Count();
+
+                createCounts[current.Month] = count;
+            }
+            return Task.FromResult(createCounts);
+        }
     }
 }

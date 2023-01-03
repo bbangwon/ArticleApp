@@ -15,5 +15,7 @@
         Task<int> GetTotalRecordsCountByParentIdWithSearchQueryAsync(int parentId, string searchQuery);
         Task<List<Notice>> GetPageByParentIdWithSearchQueryAsync(int pageIndex, int pageSize, int parentId, string searchQuery);
 
+        Task<SortedList<int, int>> GetMonthlyCreateCountAsync();
+
     }
 }

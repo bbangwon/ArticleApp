@@ -1,0 +1,75 @@
+﻿@page "/Notices/Report"
+@using ChartJs.Blazor.BarChart
+@using ChartJs.Blazor.BarChart.Axes;
+@using ChartJs.Blazor.Common;
+@using ChartJs.Blazor.Common.Axes;
+@using ChartJs.Blazor.Common.Axes.Ticks;
+@using ChartJs.Blazor.Common.Enums;
+@using ChartJs.Blazor.Util;
+@using System.Drawing;
+
+@inject INoticeRepository Repository
+
+
+<div class="card">
+    <div class="card-body">
+        <Chart Config="_config"></Chart>
+    </div>
+</div>
+
+
+@code {
+    private const int InitalCount = 7;
+    private Random _rng = new Random();
+    private BarConfig _config;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _config = new BarConfig()
+            {
+                Options = new BarOptions
+                {
+                    Responsive = true,
+                    Legend = new Legend
+                    {
+                        Display = false
+                    },
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "지난 1년동안의 공지사항 글 수"
+                    }
+                }
+            };
+
+        List<string> labels = new List<string>();
+        List<string> backgroundColors = new List<string>();
+        List<int> values = new List<int>();        
+
+        for (int i = 1; i <= 12; i++)
+        {
+            _config.Data.Labels.Add($"{i}");
+            backgroundColors.Add(ColorUtil.RandomColorString());
+        }
+
+        var sortedList = await Repository.GetMonthlyCreateCountAsync();
+        for (int i = 1; i <= 12; i++)
+        {
+            values.Add(sortedList[i]);
+        }
+
+        var _barDataset = new BarDataset<int>
+            {
+                BackgroundColor = backgroundColors.ToArray(),
+                BorderWidth = 1,
+                HoverBackgroundColor = ColorUtil.RandomColorString(),
+                HoverBorderColor = ColorUtil.RandomColorString(),
+                HoverBorderWidth = 1,
+                BorderColor = "#ffffff"
+            };
+
+        _barDataset.AddRange(values.ToArray());
+        _config.Data.Datasets.Add(_barDataset);
+
+    }
+}

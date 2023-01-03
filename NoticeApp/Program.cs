@@ -24,6 +24,13 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddMatBlazor();
 
+//좀 더 자세한 오류메시지를 볼수 있도록
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+    });
+
 builder.Services.AddDbContext<NoticeAppDbContext>(options =>
 {    
     options.UseSqlServer(connectionString);
