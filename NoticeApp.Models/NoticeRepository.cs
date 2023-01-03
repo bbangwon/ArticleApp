@@ -71,7 +71,7 @@ namespace NoticeApp.Models
         public async Task<bool> RemoveAsync(int id)
         {
             var notice = await GetByIdAsync(id);
-            if(notice != null)
+            if (notice != null)
             {
                 this.dbContext.Remove(notice);
                 try
@@ -97,7 +97,7 @@ namespace NoticeApp.Models
             {
                 logger.LogError($"ERROR ({nameof(UpdateAsync)}): {e.Message}");
             }
-            return false;            
+            return false;
         }
 
         public async Task<bool> RemoveAllByParentIdAsync(int parentId)
@@ -134,6 +134,56 @@ namespace NoticeApp.Models
         public Task<int> GetTotalRecordsCountAsync()
         {
             return this.dbContext.Notices.CountAsync();
+        }
+
+        public Task<int> GetTotalRecordsCountWithSearchQueryAsync(string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m =>
+                    (m.Name != null && m.Name.Contains(searchQuery)) ||
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+                .CountAsync();
+        }
+
+        public Task<List<Notice>> GetPageWithSearchQueryAsync(int pageIndex, int pageSize, string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m => 
+                    (m.Name != null && m.Name.Contains(searchQuery)) || 
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<int> GetTotalRecordsCountByParentIdWithSearchQueryAsync(int parentId, string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m => m.ParentId == parentId)
+                .Where(m =>
+                    (m.Name != null && m.Name.Contains(searchQuery)) ||
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+            .CountAsync();
+        }
+
+        public Task<List<Notice>> GetPageByParentIdWithSearchQueryAsync(int pageIndex, int pageSize, int parentId, string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m => m.ParentId == parentId)
+                .Where(m =>
+                    (m.Name != null && m.Name.Contains(searchQuery)) ||
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
     }
 }

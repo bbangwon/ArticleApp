@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoticeApp.Models.Tests", "N
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoticeApp.Apis", "NoticeApp.Apis\NoticeApp.Apis.csproj", "{46566C4B-B84A-4516-8758-E6FFEE69F2F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoticeApp", "NoticeApp\NoticeApp.csproj", "{18DD345C-44FF-4924-BCB8-C6898E000407}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoticeApp", "NoticeApp\NoticeApp.csproj", "{18DD345C-44FF-4924-BCB8-C6898E000407}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

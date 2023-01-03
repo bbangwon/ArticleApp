@@ -4,6 +4,8 @@
 @inject INoticeRepository Repository
 @inject NavigationManager NavigationManager
 
+@using NoticeApp.Pages.Notices.Components
+
 <div class="row">
     <div class="col-md-12">
         <a href="/Notices/Create" class="btn btn-primary">Create</a>
@@ -66,6 +68,10 @@
     <div class="col-md-12">
         <BWPager PagerModel="pagerModel" PageIndexChanged="OnPageIndexChanged"></BWPager>
     </div>
+
+    <div class="col-md-12">
+        <SearchBox SearchQueryChanged="Search" placeholder="Search Notices..."></SearchBox>
+    </div>
 </div>
 
 @code {
@@ -77,31 +83,44 @@
         ButtonCount = 5
     };
 
+    private string searchQuery;
+
     protected override async Task OnInitializedAsync()
     {
-        if (Repository != null)
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-        }
-        LoadPages();
+        await LoadPages();
     }
 
-    async void LoadPages()
+    async Task LoadPages()
     {
         if (Repository != null)
         {
-            models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+            if (!string.IsNullOrEmpty(this.searchQuery))
+            {
+                pagerModel.RecordCount = await Repository.GetTotalRecordsCountWithSearchQueryAsync(this.searchQuery);
+                models = await Repository.GetPageWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, this.searchQuery);
+            }
+            else
+            {
+                pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
+                models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+            }
         }
         StateHasChanged();
     }
 
-    void OnPageIndexChanged(int pageNumber)
+    async void OnPageIndexChanged(int pageNumber)
     {
-        LoadPages();
+        await LoadPages();
     }
 
     protected void NameClick(int id)
     {
         NavigationManager.NavigateTo($"/Notices/Details/{id}");
+    }
+
+    protected async void Search(string query)
+    {
+        this.searchQuery = query;
+        await LoadPages();
     }
 }

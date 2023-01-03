@@ -8,5 +8,12 @@
         Task<int> GetPinnedRecordsByParentIdAsync(int parentId);
 
         Task<bool> RemoveAllByParentIdAsync(int parentId);
+
+        Task<int> GetTotalRecordsCountWithSearchQueryAsync(string searchQuery);
+        Task<List<Notice>> GetPageWithSearchQueryAsync(int pageIndex, int pageSize, string searchQuery);
+
+        Task<int> GetTotalRecordsCountByParentIdWithSearchQueryAsync(int parentId, string searchQuery);
+        Task<List<Notice>> GetPageByParentIdWithSearchQueryAsync(int pageIndex, int pageSize, int parentId, string searchQuery);
+
     }
 }
