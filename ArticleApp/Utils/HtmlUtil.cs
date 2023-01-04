@@ -1,4 +1,4 @@
-﻿namespace NoticeApp.Utils
+﻿namespace ArticleApp.Utils
 {
     public class HtmlUtil
     {
