@@ -37,8 +37,6 @@ namespace NoticeApp.Models
                 .ToListAsync();
         }
 
-
-
         public Task<List<Notice>> GetPageByParentIdAsync(int pageIndex, int pageSize, int parentId)
         {
             return this.dbContext.Notices

@@ -21,5 +21,18 @@ namespace NoticeApp.Models
         public string? Content { get; set; }
 
         public bool? IsPinned { get; set; } = false;
+
+
+        [Display(Name = "파일")]
+        public string? FileName { get; set; }
+
+
+        [Display(Name = "파일크기")]
+        public int FileSize { get; set; }
+
+
+        [Display(Name = "다운수")]
+        public int DownCount { get; set; }
+
     }
 }

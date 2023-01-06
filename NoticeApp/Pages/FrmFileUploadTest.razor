@@ -1,0 +1,25 @@
+﻿@page "/FrmFileUploadTest"
+@inject IFileUploadService FileUploadServiceReference
+
+<h3>FrmFileUploadTest</h3>
+
+<InputFile OnChange="HandleSelection" />
+
+<input type="button" name="Save" value="업로드" @onclick="UploadClick" />
+
+@code {
+    IBrowserFile? file;
+
+    protected void HandleSelection(InputFileChangeEventArgs e)
+    {
+        this.file = e.File;
+    }
+
+    protected async void UploadClick()
+    {
+        if(this.file != null)
+        {
+            await FileUploadServiceReference.UploadAsync(this.file);
+        }
+    }
+}

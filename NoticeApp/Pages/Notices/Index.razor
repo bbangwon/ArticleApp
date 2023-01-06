@@ -86,7 +86,7 @@
 </div>
 
 @code {
-    private List<Notice> models;
+    private List<Notice>? models;
 
     private BWPagerModel pagerModel = new BWPagerModel()
     {
@@ -113,7 +113,7 @@
             else
             {
                 pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-                models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+                models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);                
             }
         }
         StateHasChanged();
