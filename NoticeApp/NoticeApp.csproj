@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BWPager\BWPager.csproj" />
+    <ProjectReference Include="..\BWPager\BWShared.csproj" />
     <ProjectReference Include="..\NoticeApp.Models\NoticeApp.Models.csproj" />
   </ItemGroup>
 

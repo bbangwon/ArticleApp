@@ -1,4 +1,4 @@
-﻿using BWPager;
+﻿using BWShared;
 
 namespace ArticleApp.Models
 {

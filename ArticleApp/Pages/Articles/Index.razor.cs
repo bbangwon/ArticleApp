@@ -1,5 +1,5 @@
 ﻿using ArticleApp.Models;
-using BWPager;
+using BWShared;
 using Microsoft.AspNetCore.Components;
 
 namespace ArticleApp.Pages.Articles

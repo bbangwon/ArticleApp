@@ -1,4 +1,4 @@
-﻿namespace BWPager
+﻿namespace BWShared
 {
     public class BWPagerModel
     {
