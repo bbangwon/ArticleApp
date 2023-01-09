@@ -1,5 +1,5 @@
 ﻿@inject INoticeRepository Repository
-@inject IFileUploadService FileUploadServiceReference
+@inject IFileStorageManager FileStorageManager
 
 @if (isShow)
 {
@@ -113,7 +113,9 @@
             Model.FileName = this.file.Name;
             Model.FileSize = Convert.ToInt32(this.file.Size);
 
-            await FileUploadServiceReference.UploadAsync(this.file);
+            var ms = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(ms);
+            await FileStorageManager.UploadAsync(ms.ToArray(), file.Name, "", true);
         }
 
         if (!int.TryParse(parentId, out int newParentId))

@@ -1,9 +1,11 @@
+using BWShared;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NoticeApp.Areas.Identity;
 using NoticeApp.Data;
+using NoticeApp.Managers;
 using NoticeApp.Models;
 using NoticeApp.Services;
 
@@ -22,6 +24,9 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddTransient<IFileStorageManager, FileStorageManager>();
+//builder.Services.AddTransient<IFileStorageManager, BlobStorageManager>();
+
 builder.Services.AddMatBlazor();
 
 //좀 더 자세한 오류메시지를 볼수 있도록
