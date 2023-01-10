@@ -11,6 +11,7 @@
         /// <param name="overwrite"></param>
         /// <returns>New FileName</returns>
         Task<string> UploadAsync(byte[] bytes, string fileName, string folderPath, bool overwrite);
+        Task<string> UploadAsync(Stream stream, string fileName, string folderPath, bool overwrite);   
 
         /// <summary>
         /// Flie(Blob) Download

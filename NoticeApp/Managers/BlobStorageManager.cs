@@ -33,5 +33,10 @@ namespace NoticeApp.Managers
         {
             throw new NotImplementedException();
         }
+
+        public Task<string> UploadAsync(Stream stream, string fileName, string folderPath, bool overwrite)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -4,13 +4,6 @@ namespace NoticeApp.Managers
 {
     public class FileStorageManager : IFileStorageManager
     {
-        private readonly IWebHostEnvironment environment;
-
-        public FileStorageManager(IWebHostEnvironment environment)
-        {
-            this.environment = environment;
-        }
-
         public Task<bool> DeleteAsync(string fileName, string folderPath)
         {
             throw new NotImplementedException();
@@ -38,8 +31,16 @@ namespace NoticeApp.Managers
 
         public async Task<string> UploadAsync(byte[] bytes, string fileName, string folderPath, bool overwrite)
         {
-            var path = Path.Combine(environment.WebRootPath, "files", fileName);
+            var path = Path.Combine(folderPath, fileName);
             await File.WriteAllBytesAsync(path, bytes);
+            return fileName;
+        }
+
+        public async Task<string> UploadAsync(Stream stream, string fileName, string folderPath, bool overwrite)
+        {
+            var path = Path.Combine(folderPath, fileName);
+            using var fileStream = new FileStream(path, FileMode.Create);
+            await stream.CopyToAsync(fileStream);
             return fileName;
         }
     }

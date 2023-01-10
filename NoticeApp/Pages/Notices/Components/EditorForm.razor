@@ -1,5 +1,6 @@
 ﻿@inject INoticeRepository Repository
 @inject IFileStorageManager FileStorageManager
+@inject IWebHostEnvironment WebEnvironment
 
 @if (isShow)
 {
@@ -113,9 +114,8 @@
             Model.FileName = this.file.Name;
             Model.FileSize = Convert.ToInt32(this.file.Size);
 
-            var ms = new MemoryStream();
-            await file.OpenReadStream().CopyToAsync(ms);
-            await FileStorageManager.UploadAsync(ms.ToArray(), file.Name, "", true);
+            string folderPath = Path.Combine(WebEnvironment.WebRootPath, "files");
+            await FileStorageManager.UploadAsync(file.OpenReadStream(), file.Name, folderPath, true);            
         }
 
         if (!int.TryParse(parentId, out int newParentId))
