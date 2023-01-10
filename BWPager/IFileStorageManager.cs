@@ -19,7 +19,7 @@
         /// <param name="fileName"></param>
         /// <param name="folderPath"></param>
         /// <returns>File or Blob</returns>
-        Task<byte[]> DownloadAsync(string fileName, string folderPath);
+        Task<byte[]?> DownloadAsync(string fileName, string folderPath);
 
         /// <summary>
         /// File(Blob) Delete

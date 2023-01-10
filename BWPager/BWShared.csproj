@@ -7,6 +7,10 @@
     <Description>BWPager 1.0.0</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="saveAsFile.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />

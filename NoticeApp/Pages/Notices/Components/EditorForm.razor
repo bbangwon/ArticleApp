@@ -98,6 +98,8 @@
 
     IBrowserFile? file;
 
+    const long MaxAllowedSize = 512000;
+
     protected override void OnParametersSet()
     {
         parentId = Model.ParentId.ToString();
@@ -115,7 +117,7 @@
             Model.FileSize = Convert.ToInt32(this.file.Size);
 
             string folderPath = Path.Combine(WebEnvironment.WebRootPath, "files");
-            await FileStorageManager.UploadAsync(file.OpenReadStream(), file.Name, folderPath, true);            
+            await FileStorageManager.UploadAsync(file.OpenReadStream(maxAllowedSize: MaxAllowedSize), file.Name, folderPath, true);
         }
 
         if (!int.TryParse(parentId, out int newParentId))

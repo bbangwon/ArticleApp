@@ -9,9 +9,15 @@ namespace NoticeApp.Managers
             throw new NotImplementedException();
         }
 
-        public Task<byte[]> DownloadAsync(string fileName, string folderPath)
+        public async Task<byte[]?> DownloadAsync(string fileName, string folderPath)
         {
-            throw new NotImplementedException();
+            var path = Path.Combine(folderPath, fileName);
+            if(File.Exists(path))
+            {
+                byte[] bytes= await File.ReadAllBytesAsync(path);
+                return bytes;
+            }
+            return null;
         }
 
         public string GetFolderPath(string ownerType, string ownerId, string fileType)

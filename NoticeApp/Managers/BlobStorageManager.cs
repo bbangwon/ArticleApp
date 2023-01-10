@@ -9,7 +9,7 @@ namespace NoticeApp.Managers
             throw new NotImplementedException();
         }
 
-        public Task<byte[]> DownloadAsync(string fileName, string folderPath)
+        public Task<byte[]?> DownloadAsync(string fileName, string folderPath)
         {
             throw new NotImplementedException();
         }

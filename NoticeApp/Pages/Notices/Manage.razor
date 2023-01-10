@@ -4,6 +4,10 @@
 @inject INoticeRepository Repository
 @inject NavigationManager NavigationManager
 
+@inject IFileStorageManager FileStorageManager
+@inject IWebHostEnvironment WebHostEnvironment
+@inject IJSRuntime JSRuntime
+
 <div class="row">
     <div class="col-md-12">
         <a href="/Notices/Create" class="btn btn-primary">Create</a>
@@ -83,6 +87,8 @@
                                 <input type="button" name="btnToggle" value="Pinned with Modal"
                                class="btn btn-primary"
                                @onclick="(() => ToggleBy(m))" />
+                               <input type="button" name="btnDownload" value="Download"
+                                   class="btn btn-primary" @onclick="(() => DownloadBy(m))"/>
                             </td>
                         </tr>
                     }
@@ -235,6 +241,20 @@
     {
         this.model = model;
         this.IsInlineDialogShow = true;
+    }
+
+    protected async void DownloadBy(Notice model)
+    {
+        if (!string.IsNullOrEmpty(model.FileName))
+        {
+            var folderPath = Path.Combine(WebHostEnvironment.WebRootPath, "files");
+            byte[]? fileBytes = await FileStorageManager.DownloadAsync(model.FileName, folderPath);
+
+            if(fileBytes != null)
+            {
+                await JSRuntime.SaveAs(model.FileName, fileBytes);
+            }
+        }
     }
 
     protected async void CreateOrEdit()
