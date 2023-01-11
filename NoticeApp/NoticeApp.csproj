@@ -22,8 +22,4 @@
     <ProjectReference Include="..\NoticeApp.Models\NoticeApp.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\files\" />
-  </ItemGroup>
-
 </Project>

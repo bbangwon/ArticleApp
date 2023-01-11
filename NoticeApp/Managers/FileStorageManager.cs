@@ -4,9 +4,14 @@ namespace NoticeApp.Managers
 {
     public class FileStorageManager : IFileStorageManager
     {
-        public Task<bool> DeleteAsync(string fileName, string folderPath)
+        public async Task<bool> DeleteAsync(string fileName, string folderPath)
         {
-            throw new NotImplementedException();
+            var path = Path.Combine(folderPath, fileName);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            return await Task.FromResult(true);
         }
 
         public async Task<byte[]?> DownloadAsync(string fileName, string folderPath)

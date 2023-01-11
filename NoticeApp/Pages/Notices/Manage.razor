@@ -225,6 +225,10 @@
 
     protected async void DeleteClick()
     {
+        string folderPath = Path.Combine(WebHostEnvironment.WebRootPath, "files");
+        if (!string.IsNullOrEmpty(this.model.FileName))
+            await FileStorageManager.DeleteAsync(this.model.FileName, folderPath);            
+
         await Repository.RemoveAsync(this.model.Id);
         DeleteDialogReference?.Hide();
         this.model = new Notice();
