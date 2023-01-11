@@ -116,8 +116,7 @@
             Model.FileName = this.file.Name;
             Model.FileSize = Convert.ToInt32(this.file.Size);
 
-            string folderPath = Path.Combine(WebEnvironment.WebRootPath, "files");
-            await FileStorageManager.UploadAsync(file.OpenReadStream(maxAllowedSize: MaxAllowedSize), file.Name, folderPath, true);
+            await FileStorageManager.UploadAsync(file.OpenReadStream(maxAllowedSize: MaxAllowedSize), file.Name, string.Empty, true);
         }
 
         if (!int.TryParse(parentId, out int newParentId))

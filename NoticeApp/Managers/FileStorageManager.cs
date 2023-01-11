@@ -4,9 +4,20 @@ namespace NoticeApp.Managers
 {
     public class FileStorageManager : IFileStorageManager
     {
+        private readonly IWebHostEnvironment environment;
+        private readonly string containerName;
+        private readonly string folderPath;
+
+        public FileStorageManager(IWebHostEnvironment WebHostEnvironment)
+        {
+            environment = WebHostEnvironment;
+            containerName = "files";
+            folderPath = Path.Combine(environment.WebRootPath, containerName);            
+        }
+
         public async Task<bool> DeleteAsync(string fileName, string folderPath)
         {
-            var path = Path.Combine(folderPath, fileName);
+            var path = Path.Combine(this.folderPath, folderPath, fileName);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -16,7 +27,7 @@ namespace NoticeApp.Managers
 
         public async Task<byte[]?> DownloadAsync(string fileName, string folderPath)
         {
-            var path = Path.Combine(folderPath, fileName);
+            var path = Path.Combine(this.folderPath, folderPath, fileName);
             if(File.Exists(path))
             {
                 byte[] bytes= await File.ReadAllBytesAsync(path);
@@ -42,14 +53,14 @@ namespace NoticeApp.Managers
 
         public async Task<string> UploadAsync(byte[] bytes, string fileName, string folderPath, bool overwrite)
         {
-            var path = Path.Combine(folderPath, fileName);
+            var path = Path.Combine(this.folderPath, folderPath, fileName);
             await File.WriteAllBytesAsync(path, bytes);
             return fileName;
         }
 
         public async Task<string> UploadAsync(Stream stream, string fileName, string folderPath, bool overwrite)
         {
-            var path = Path.Combine(folderPath, fileName);
+            var path = Path.Combine(this.folderPath, folderPath, fileName);
             using var fileStream = new FileStream(path, FileMode.Create);
             await stream.CopyToAsync(fileStream);
             return fileName;
