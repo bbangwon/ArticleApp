@@ -54,7 +54,7 @@
                 {
                     <tbody>
                         <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <p>데이터가 없습니다.</p>
                             </td>
                         </tr>
@@ -108,7 +108,8 @@
 <EditorForm Model="model"
             @ref="EditorFormReference"
             CreateCallback="CreateOrEdit"
-            EditCallback="CreateOrEdit">
+            EditCallback="CreateOrEdit" 
+            ParentKey="@ParentKey">
     <EditorFormTitle>@EditorFormTitle</EditorFormTitle>
 </EditorForm>
 
@@ -141,6 +142,9 @@
     [Parameter]
     public int ParentId { get; set; }
 
+    [Parameter]
+    public string? ParentKey { get; set; }
+
     public string EditorFormTitle { get; set; } = "CREATE";
 
     private List<Notice> models;
@@ -165,35 +169,45 @@
         await LoadPages();
     }
 
+    async Task DisplayData()
+    {
+        if (string.IsNullOrEmpty(ParentKey))
+        {
+            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
+            models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
+        }
+        else
+        {
+            pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentKeyAsync(ParentKey);
+            models = await Repository.GetPageByParentKeyAsync(pagerModel.Index, pagerModel.Size, ParentKey);
+        }
+    }
+
+    async Task SearchData()
+    {
+        if (string.IsNullOrEmpty(ParentKey))
+        {
+            pagerModel.RecordCount = await Repository.GetTotalRecordsCountWithSearchQueryAsync(this.searchQuery);
+            models = await Repository.GetPageWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, this.searchQuery);
+        }
+        else
+        {
+            pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentKeyWithSearchQueryAsync(ParentKey, this.searchQuery);
+            models = await Repository.GetPageByParentKeyWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, ParentKey, this.searchQuery);
+        }
+    }
+
     async Task LoadPages()
     {
         if (Repository != null)
         {
             if (!string.IsNullOrEmpty(this.searchQuery))
             {
-                if(ParentId == 0)
-                {
-                    pagerModel.RecordCount = await Repository.GetTotalRecordsCountWithSearchQueryAsync(this.searchQuery);
-                    models = await Repository.GetPageWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, this.searchQuery);                    
-                }
-                else
-                {
-                    pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentIdWithSearchQueryAsync(ParentId, this.searchQuery);
-                    models = await Repository.GetPageByParentIdWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, ParentId, this.searchQuery);
-                }
+                await SearchData();
             }
             else
             {
-                if (ParentId == 0)
-                {
-                    pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-                    models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
-                }
-                else
-                {
-                    pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentIdAsync(ParentId);
-                    models = await Repository.GetPageByParentIdAsync(pagerModel.Index, pagerModel.Size, ParentId);
-                }
+                await DisplayData();
             }
         }
         StateHasChanged();

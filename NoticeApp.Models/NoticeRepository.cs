@@ -209,5 +209,47 @@ namespace NoticeApp.Models
             }
             return Task.FromResult(createCounts);
         }
+
+        public Task<List<Notice>> GetPageByParentKeyAsync(int pageIndex, int pageSize, string parentKey)
+        {
+            return this.dbContext.Notices
+                .Where(m => m.ParentKey == parentKey)
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<int> GetTotalRecordsCountByParentKeyAsync(string parentKey)
+        {
+            return this.dbContext.Notices.Where(m => m.ParentKey == parentKey).CountAsync();
+        }
+
+        public Task<int> GetTotalRecordsCountByParentKeyWithSearchQueryAsync(string parentKey, string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m => m.ParentKey == parentKey)
+                .Where(m =>
+                    (m.Name != null && EF.Functions.Like(m.Name, $"%{searchQuery}%")) ||
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+            .CountAsync();
+        }
+
+        public Task<List<Notice>> GetPageByParentKeyWithSearchQueryAsync(int pageIndex, int pageSize, string parentKey, string searchQuery)
+        {
+            return this.dbContext.Notices
+                .Where(m => m.ParentKey == parentKey)
+                .Where(m =>
+                    (m.Name != null && EF.Functions.Like(m.Name, $"%{searchQuery}%")) ||
+                    (m.Title != null && m.Title.Contains(searchQuery)) ||
+                    (m.Content != null && m.Content.Contains(searchQuery)))
+                .OrderByDescending(m => m.Id)
+                //.Include(m => m.NoticesComments)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

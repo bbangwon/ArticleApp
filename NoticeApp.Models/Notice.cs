@@ -12,6 +12,8 @@ namespace NoticeApp.Models
         
         public int? ParentId { get; set; }
 
+        public string? ParentKey { get; set; }
+
         [Required(ErrorMessage = "이름을 입력하세요.")]
         [MaxLength(255)]
         public string? Name { get; set; }

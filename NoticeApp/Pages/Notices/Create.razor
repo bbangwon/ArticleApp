@@ -71,7 +71,7 @@
         if(int.TryParse(ParentId, out int parentId))
         {
             model.ParentId = parentId;
-        }       
+        }
         await Repository.AddAsync(model);
         NavigationManager.NavigateTo("/Notices");
     }
