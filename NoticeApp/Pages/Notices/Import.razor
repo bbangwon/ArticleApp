@@ -1,0 +1,107 @@
+﻿@page "/Notices/Import"
+@using NoticeApp.Pages.Notices.Components
+@using OfficeOpenXml;
+
+@inject INoticeRepository Repository
+@inject IFileStorageManager FileStorageManager
+@inject NavigationManager NavigationManager
+
+<h3>Import</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        <EditForm Model="model" OnValidSubmit="FormSubmit">
+            <NoticeInputFile @ref="noticeInputFileRef" OnChange="HandleSelection"></NoticeInputFile>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/Notices" class="btn btn-secondary">List</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead class="thread-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>DownCount</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            @if (Models.Count == 0)
+            {
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            <p>데이터가 없습니다.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+            <tbody>
+                @foreach (var m in Models)
+                {
+                    <tr>
+                        <td>@m.Id</td>
+                        <td>
+                            <a href="/Notices/Details/@m.Id">
+                                @m.Name
+                            </a>
+                        </td>
+                        <td>@m.DownCount</td>
+                        <td>
+                            <a href="/Notices/Details/@m.Id" class="btn btn-light">Details</a>
+                            <a href="/Notices/Edit/@m.Id" class="btn btn-light">Edit</a>
+                            <a href="/Notices/Delete/@m.Id" class="btn btn-light">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    protected Notice model = new Notice();
+
+    NoticeInputFile? noticeInputFileRef;
+
+    public List<Notice> Models { get; set; } = new List<Notice>();
+
+    protected async Task FormSubmit()
+    {
+        foreach (var m in Models)
+        {
+            await Repository.AddAsync(m);
+        }        
+        NavigationManager.NavigateTo("/Notices");
+    }
+
+    protected async void HandleSelection(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using (var stream = new MemoryStream())
+        {
+            await file.OpenReadStream().CopyToAsync(stream);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage(stream);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+            var rowCount = worksheet.Dimension.End.Row;
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                Models.Add(new Notice
+                {
+                    Name = worksheet.Cells[row, 1].Value.ToString()?.Trim(),
+                    DownCount = int.Parse(worksheet.Cells[row, 2].Value.ToString()?.Trim() ?? "0")
+                });
+            }
+        }
+        StateHasChanged();
+    }
+}
