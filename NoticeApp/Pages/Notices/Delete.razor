@@ -3,6 +3,7 @@
 
 @inject INoticeRepository Repository
 @inject NavigationManager NavigationManager
+@inject IFileStorageManager FileStorageManager
 @inject IJSRuntime JSRuntime
 
 <h3>Delete</h3>
@@ -61,6 +62,8 @@
 
         if(isDelete)
         {
+            await FileStorageManager.DeleteAsync(model.FileName, "");
+
             await Repository.RemoveAsync(Id);
             NavigationManager.NavigateTo("/Notices");
         }

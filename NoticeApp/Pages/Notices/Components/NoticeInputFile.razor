@@ -1,0 +1,39 @@
+﻿@inject IFileStorageManager FileStorageManager
+
+<div class="form-group">
+    <label for="formFile">Upload File</label>
+    <div class="input-group mb-3">
+        <InputFile OnChange="HandleSelection" id="formFile" class="form-control"></InputFile>
+        <label class="input-group-text" for="formFile">Upload</label>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
+
+    IBrowserFile? file;
+    const long MaxAllowedSize = 512000;
+
+    public string? FileName => this.file?.Name ?? null;
+    public int FileSize => (int)(this.file?.Size ?? 0);
+
+    public bool IsSelected => this.file != null;
+
+    public async Task<bool> UploadAsync()
+    {
+        if (this.file != null)
+        {
+            await FileStorageManager.UploadAsync(this.file.OpenReadStream(maxAllowedSize: MaxAllowedSize), this.file.Name, string.Empty, true);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void HandleSelection(InputFileChangeEventArgs e)
+    {
+        this.file = e.File;
+        OnChange.InvokeAsync(e);
+    }
+}

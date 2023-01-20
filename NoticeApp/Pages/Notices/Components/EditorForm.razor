@@ -51,10 +51,7 @@
                             <ValidationMessage For="@(() => parentId)" class="form-text text-muted"></ValidationMessage>
                         </div>
 
-                        <div class="form-group">
-                            <label for="txtTitle">File</label>
-                            <InputFile OnChange="HandleSelection"></InputFile>
-                        </div>
+                        <NoticeInputFile @ref="noticeInputFileRef"></NoticeInputFile>
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -96,9 +93,7 @@
 
     protected int[] parentIds = { 1, 2, 3 };
 
-    IBrowserFile? file;
-
-    const long MaxAllowedSize = 512000;
+    NoticeInputFile? noticeInputFileRef;
 
     protected override void OnParametersSet()
     {
@@ -111,12 +106,13 @@
 
     protected async Task CreateOrEditClick()
     {
-        if (this.file != null)
+        if (noticeInputFileRef!.IsSelected)
         {
-            Model.FileName = this.file.Name;
-            Model.FileSize = Convert.ToInt32(this.file.Size);
+            await FileStorageManager.DeleteAsync(Model.FileName, "");
+            await noticeInputFileRef!.UploadAsync();
 
-            await FileStorageManager.UploadAsync(file.OpenReadStream(maxAllowedSize: MaxAllowedSize), file.Name, string.Empty, true);
+            Model.FileName = noticeInputFileRef.FileName;
+            Model.FileSize = noticeInputFileRef.FileSize;
         }
 
         if (!int.TryParse(parentId, out int newParentId))
@@ -135,11 +131,5 @@
             await Repository.UpdateAsync(Model);
             await EditCallback.InvokeAsync(true);
         }
-    }
-
-
-    protected void HandleSelection(InputFileChangeEventArgs e)
-    {
-        this.file = e.File;
     }
 }

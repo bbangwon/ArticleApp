@@ -1,7 +1,9 @@
 ﻿@page "/Notices/Edit/{Id:int}"
 @using ArticleApp.Utils;
+@using NoticeApp.Pages.Notices.Components
 
 @inject INoticeRepository Repository
+@inject IFileStorageManager FileStorageManager
 @inject NavigationManager NavigationManager
 
 <h3>Edit</h3>
@@ -37,6 +39,9 @@
                 </InputSelect>
                 <ValidationMessage For="@(() => ParentId)" class="form-text text-muted"></ValidationMessage>
             </div>
+
+            <NoticeInputFile @ref="noticeInputFileRef"></NoticeInputFile>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <a href="/Notices" class="btn btn-secondary">List</a>
@@ -57,6 +62,8 @@
 
     protected string content = "";
 
+    NoticeInputFile? noticeInputFileRef;
+
     protected override async Task OnInitializedAsync()
     {
         model = await Repository.GetByIdAsync(Id);
@@ -66,6 +73,15 @@
 
     protected async Task FormSubmit()
     {
+        if (noticeInputFileRef!.IsSelected)
+        {
+            await FileStorageManager.DeleteAsync(model.FileName, "");
+            await noticeInputFileRef!.UploadAsync();
+
+            model.FileName = noticeInputFileRef.FileName;
+            model.FileSize = noticeInputFileRef.FileSize;
+        }
+
         if (int.TryParse(ParentId, out int parentId))
         {
             model.ParentId = parentId;
@@ -73,6 +89,4 @@
         await Repository.UpdateAsync(model);
         NavigationManager.NavigateTo("/Notices");
     }
-
-
 }

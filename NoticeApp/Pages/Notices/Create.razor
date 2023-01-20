@@ -1,6 +1,8 @@
 ﻿@page "/Notices/Create"
+@using NoticeApp.Pages.Notices.Components
 
 @inject INoticeRepository Repository
+@inject IFileStorageManager FileStorageManager
 @inject NavigationManager NavigationManager
 
 <h3>Create</h3>
@@ -36,6 +38,9 @@
                 </InputSelect>
                 <ValidationMessage For="@(() => ParentId)" class="form-text text-muted"></ValidationMessage>
             </div>
+
+            <NoticeInputFile @ref="noticeInputFileRef"></NoticeInputFile>
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Submit</button>
                 <a href="/Notices" class="btn btn-secondary">List</a>
@@ -51,8 +56,18 @@
 
     protected int[] parentIds = { 1, 2, 3 };
 
+    const long MaxAllowedSize = 512000;
+
+    NoticeInputFile? noticeInputFileRef;
+
     protected async Task FormSubmit()
     {
+        if(await noticeInputFileRef!.UploadAsync())
+        {
+            model.FileName = noticeInputFileRef.FileName;
+            model.FileSize = noticeInputFileRef.FileSize;
+        }
+
         if(int.TryParse(ParentId, out int parentId))
         {
             model.ParentId = parentId;
