@@ -36,5 +36,9 @@ namespace NoticeApp.Models
         [Display(Name = "다운수")]
         public int DownCount { get; set; }
 
+        public int Ref { get; set; }
+        public int? Step { get; set; }
+        public int? RefOrder { get; set; }
+
     }
 }

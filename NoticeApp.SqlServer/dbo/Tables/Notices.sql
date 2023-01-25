@@ -18,5 +18,9 @@
 	[FileName] NVARCHAR(255) NULL,
 	[FileSize] INT DEFAULT 0,
 	[DownCount] INT DEFAULT 0,
+
+	[Ref] INT NOT NULL,
+	[Step] INT DEFAULT 0,
+	[RefOrder] INT DEFAULT 0
 )
 GO
