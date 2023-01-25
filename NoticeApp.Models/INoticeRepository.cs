@@ -26,5 +26,8 @@
         Task<bool> RemoveAllByParentIdAsync(int parentId);
 
         Task<(List<Notice> notices, int totalCount)> GetNotices<TParentIdentifier>(int pageIndex, int pageSize, string searchField, string searchQuery, string sortOrder, TParentIdentifier parentIdentifier);
+        
+        //답변기능
+        Task<Notice> AddAsync(Notice model, int parentRef, int parentStep, int parentOrder);
     }
 }

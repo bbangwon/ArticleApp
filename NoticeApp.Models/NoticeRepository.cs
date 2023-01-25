@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace NoticeApp.Models
 {
@@ -17,9 +16,25 @@ namespace NoticeApp.Models
 
         public async Task<Notice> AddAsync(Notice model)
         {
-            this.dbContext.Add(model);
+            //현재테이블의 Ref의 Max값 가져오기
+            #region Reply 추가 기능
+            int maxRef = 1;
+
+            if(this.dbContext.Notices.Count() > 0)
+            {
+                int? max = this.dbContext.Notices.Max(x => x.Ref);
+                if (max.HasValue)
+                    maxRef = max.Value + 1;
+            }
+
+            model.Ref = maxRef;
+            model.Step = 0;
+            model.RefOrder = 0; 
+            #endregion
+
             try
             {
+                this.dbContext.Add(model);
                 await this.dbContext.SaveChangesAsync();
             }
             catch (Exception e)
@@ -300,13 +315,48 @@ namespace NoticeApp.Models
                     items = items.OrderByDescending(m => m.Title);
                     break;
                 default:
-                    items = items.OrderByDescending(m => m.Id);
+                    items = items.OrderByDescending(m => m.Ref).ThenBy(m => m.RefOrder);
                     break;
             }
 
             items = items.Skip(pageIndex * pageSize).Take(pageSize);
 
             return (await items.ToListAsync(), totalCount);
+        }
+
+        public async Task<Notice> AddAsync(Notice model, int parentRef, int parentStep, int parentOrder)
+        {
+            //비집고 들어갈 자리
+            var replys = await this.dbContext.Notices.Where(m => m.Ref == parentRef && m.RefOrder > parentOrder).ToListAsync();
+            foreach (var item in replys)
+            {
+                item.RefOrder++;
+                try
+                {
+                    this.dbContext.Update(item);
+                    await this.dbContext.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"ERROR ({nameof(AddAsync)}): {e.Message}");
+                }
+            }
+
+            model.Ref = parentRef;
+            model.Step = parentStep + 1;
+            model.RefOrder = parentOrder + 1;
+
+            try
+            {
+                this.dbContext.Add(model);
+                await this.dbContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"ERROR ({nameof(AddAsync)}): {e.Message}");
+            }
+
+            return model;
         }
     }
 }

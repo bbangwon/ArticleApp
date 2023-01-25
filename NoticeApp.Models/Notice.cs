@@ -36,8 +36,19 @@ namespace NoticeApp.Models
         [Display(Name = "다운수")]
         public int DownCount { get; set; }
 
+        /// <summary>
+        /// 참조(부모글)
+        /// </summary>
         public int Ref { get; set; }
+
+        /// <summary>
+        /// 답변깊이(레벨)
+        /// </summary>
         public int? Step { get; set; }
+
+        /// <summary>
+        /// 답변순서
+        /// </summary>
         public int? RefOrder { get; set; }
 
     }
