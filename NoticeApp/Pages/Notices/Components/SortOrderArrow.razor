@@ -1,0 +1,32 @@
+﻿<span style="color: #ff6358; vertical-align:text-bottom; margin-left: 7px; font-weight:bold;">@arrow</span>
+
+@code {
+    [Parameter]
+    public string? SortColumn { get; set; }
+
+    [Parameter]
+    public string? SortOrder { get; set; }
+
+    private string arrow = "";
+
+    protected override void OnParametersSet()
+    {
+        arrow = "";
+        if(!string.IsNullOrEmpty(SortOrder) && !string.IsNullOrEmpty(SortColumn))
+        {
+            if (SortOrder.Contains(SortColumn))
+            {
+                if(SortOrder.Contains("Desc"))
+                {
+                    arrow = "↓";
+                }
+                else
+                {
+                    arrow = "↑";
+                }
+            }
+        }
+
+        StateHasChanged();
+    }
+}

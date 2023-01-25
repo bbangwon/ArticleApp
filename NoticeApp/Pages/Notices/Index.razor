@@ -39,7 +39,8 @@
                 <thead class="thread-light">
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th @onclick="@(() => SortByName())">Name <SortOrderArrow SortColumn="Name" SortOrder="@sortOrder"></SortOrderArrow></th>
+                        <th @onclick="@(() => SortByTitle())">Title <SortOrderArrow SortColumn="Title" SortOrder="@sortOrder"></SortOrderArrow></th>
                         <th>Created</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -48,7 +49,7 @@
                 {
                     <tbody>
                         <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="5" class="text-center">
                                 <p>데이터가 없습니다.</p>
                             </td>
                         </tr>
@@ -63,6 +64,9 @@
                                 <a href="/Notices/Details/@m.Id">
                                     @m.Name
                                 </a>
+                            </td>
+                            <td>
+                                @m.Title
                             </td>
                             <td>@m.Created.ToShortTimeString()</td>
                             <td>
@@ -90,11 +94,13 @@
 
     private BWPagerModel pagerModel = new BWPagerModel()
     {
-        Size = 2,
+        Size = 10,
         ButtonCount = 5
     };
 
     private string searchQuery = string.Empty;
+
+    private string sortOrder = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,16 +111,9 @@
     {
         if (Repository != null)
         {
-            if (!string.IsNullOrEmpty(this.searchQuery))
-            {
-                pagerModel.RecordCount = await Repository.GetTotalRecordsCountWithSearchQueryAsync(this.searchQuery);
-                models = await Repository.GetPageWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, this.searchQuery);
-            }
-            else
-            {
-                pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-                models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);                
-            }
+            var result = await Repository.GetNotices(pagerModel.Index, pagerModel.Size, "", this.searchQuery, this.sortOrder, 0);
+            pagerModel.RecordCount = result.totalCount;
+            models = result.notices;
         }
         StateHasChanged();
     }
@@ -132,6 +131,43 @@
     protected async void Search(string query)
     {
         this.searchQuery = query;
+        await LoadPages();
+    }
+
+    protected async void SortByName()
+    {
+        if(sortOrder == "")
+        {
+            sortOrder = "Name";
+        }
+        else if(sortOrder == "Name")
+        {
+            sortOrder = "NameDesc";
+        }
+        else
+        {
+            sortOrder = "";
+        }
+
+        await LoadPages();
+
+    }
+
+    protected async void SortByTitle()
+    {
+        if (sortOrder == "")
+        {
+            sortOrder = "Title";
+        }
+        else if (sortOrder == "Title")
+        {
+            sortOrder = "TitleDesc";
+        }
+        else
+        {
+            sortOrder = "";
+        }
+
         await LoadPages();
     }
 }

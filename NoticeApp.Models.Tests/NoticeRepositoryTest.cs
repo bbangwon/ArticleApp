@@ -26,7 +26,7 @@ namespace NoticeApp.Models.Tests
                 {
                     Name = "[1] 관리자",
                     Title = "공지사항입니다.",
-                    Content = "내용입니다."
+                    Content = "내용입니다.",
                 };
 
                 await repository.AddAsync(model);
@@ -140,8 +140,16 @@ namespace NoticeApp.Models.Tests
 
                 Assert.AreEqual("[3] 백두산", firstName);
                 Assert.AreEqual(2, recordCount);
-            } 
+            }
             #endregion
+
+            using (var context = new NoticeAppDbContext(options))
+            {
+                var repository = new NoticeRepository(context, factory!);
+                var articleSet = await repository.GetNotices(0, 10, "", "", "NameDesc", "");
+
+                Assert.AreEqual("[3] 백두산", articleSet.notices[0].Name);
+            }
         }
     }
 }

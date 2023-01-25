@@ -47,7 +47,8 @@
                 <thead class="thread-light">
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th @onclick="@(() => SortByName())">Name <SortOrderArrow SortColumn="Name" SortOrder="@sortOrder"></SortOrderArrow></th>
+                        <th @onclick="@(() => SortByTitle())">Title <SortOrderArrow SortColumn="Title" SortOrder="@sortOrder"></SortOrderArrow></th>
                         <th>Created</th>
                         <th>IsPinned</th>
                         <th>Action</th>
@@ -58,7 +59,7 @@
                 {
                     <tbody>
                         <tr>
-                            <td colspan="6" class="text-center">
+                            <td colspan="7" class="text-center">
                                 <p>데이터가 없습니다.</p>
                             </td>
                         </tr>
@@ -74,6 +75,7 @@
                                     @m.Name
                                 </a>
                             </td>
+                            <td>@m.Title</td>
                             <td>@m.Created.ToShortTimeString()</td>
                             <td>@(m.IsPinned == true ? "공지" : "")</td>
                             <td>
@@ -151,11 +153,11 @@
 
     public string EditorFormTitle { get; set; } = "CREATE";
 
-    private List<Notice> models;
+    private List<Notice>? models;
 
     private BWPagerModel pagerModel = new BWPagerModel()
         {
-            Size = 2,
+            Size = 10,
             ButtonCount = 5
         };
 
@@ -168,50 +170,28 @@
 
     private string searchQuery = string.Empty;
 
+    private string sortOrder = "";
+
     protected override async Task OnInitializedAsync()
     {
         await LoadPages();
-    }
-
-    async Task DisplayData()
-    {
-        if (string.IsNullOrEmpty(ParentKey))
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountAsync();
-            models = await Repository.GetPageAsync(pagerModel.Index, pagerModel.Size);
-        }
-        else
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentKeyAsync(ParentKey);
-            models = await Repository.GetPageByParentKeyAsync(pagerModel.Index, pagerModel.Size, ParentKey);
-        }
-    }
-
-    async Task SearchData()
-    {
-        if (string.IsNullOrEmpty(ParentKey))
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountWithSearchQueryAsync(this.searchQuery);
-            models = await Repository.GetPageWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, this.searchQuery);
-        }
-        else
-        {
-            pagerModel.RecordCount = await Repository.GetTotalRecordsCountByParentKeyWithSearchQueryAsync(ParentKey, this.searchQuery);
-            models = await Repository.GetPageByParentKeyWithSearchQueryAsync(pagerModel.Index, pagerModel.Size, ParentKey, this.searchQuery);
-        }
-    }
+    }   
 
     async Task LoadPages()
     {
         if (Repository != null)
         {
-            if (!string.IsNullOrEmpty(this.searchQuery))
+            if(this.ParentKey != "")
             {
-                await SearchData();
+                var result = await Repository.GetNotices(pagerModel.Index, pagerModel.Size, "", this.searchQuery, this.sortOrder, this.ParentKey);
+                pagerModel.RecordCount = result.totalCount;
+                models = result.notices;                
             }
             else
             {
-                await DisplayData();
+                var result = await Repository.GetNotices(pagerModel.Index, pagerModel.Size, "", this.searchQuery, this.sortOrder, this.ParentId);
+                pagerModel.RecordCount = result.totalCount;
+                models = result.notices;
             }
         }
         StateHasChanged();
@@ -307,6 +287,9 @@
 
     protected void DownloadExcel()
     {
+        if (this.models == null)
+            return;
+
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         using (var package = new ExcelPackage())
         {
@@ -334,7 +317,45 @@
             header.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
 
             FileUtil.SaveAs(JSRuntime, "Uploads.xlsx", package.GetAsByteArray());
-        }
+        }        
     }
+
+    protected async void SortByName()
+    {
+        if (sortOrder == "")
+        {
+            sortOrder = "Name";
+        }
+        else if (sortOrder == "Name")
+        {
+            sortOrder = "NameDesc";
+        }
+        else
+        {
+            sortOrder = "";
+        }
+
+        await LoadPages();
+
+    }
+
+    protected async void SortByTitle()
+    {
+        if (sortOrder == "")
+        {
+            sortOrder = "Title";
+        }
+        else if (sortOrder == "Title")
+        {
+            sortOrder = "TitleDesc";
+        }
+        else
+        {
+            sortOrder = "";
+        }
+
+        await LoadPages();
+    }
+
 }
 

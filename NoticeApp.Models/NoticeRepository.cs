@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace NoticeApp.Models
 {
@@ -250,6 +251,62 @@ namespace NoticeApp.Models
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<(List<Notice> notices, int totalCount)> GetNotices<TParentIdentifier>(int pageIndex, int pageSize, string searchField, string searchQuery, string sortOrder, TParentIdentifier parentIdentifier)
+        {
+            var items = this.dbContext.Notices.Select(m => m);
+
+            if(parentIdentifier is int parentId && parentId != 0)
+            {
+                items = items.Where(m => m.ParentId == parentId);
+            }
+            else if(parentIdentifier is string parentKey && !string.IsNullOrEmpty(parentKey))
+            {
+                items = items.Where(m => m.ParentKey == parentKey);
+            }
+
+            if(!string.IsNullOrEmpty(searchQuery))
+            {
+                if(searchField == "Name")
+                {
+                    
+                    items = items.Where(m => !string.IsNullOrEmpty(m.Name) && m.Name.Contains(searchQuery));
+                }
+                else if(searchField == "Title") 
+                {
+                    items = items.Where(m => !string.IsNullOrEmpty(m.Title) && m.Title.Contains(searchQuery));
+                }
+                else
+                {
+                    items = items.Where(m =>(!string.IsNullOrEmpty(m.Name) && m.Name.Contains(searchQuery)) || (!string.IsNullOrEmpty(m.Title) && m.Title.Contains(searchQuery)));
+                }
+            }
+
+            var totalCount = await items.CountAsync();
+
+            switch(sortOrder)
+            {
+                case "Name":
+                    items = items.OrderBy(m => m.Name);
+                    break;
+                case "NameDesc":
+                    items = items.OrderByDescending(m => m.Name);
+                    break;
+                case "Title":
+                    items = items.OrderBy(m => m.Title);
+                    break;
+                case "TitleDesc":
+                    items = items.OrderByDescending(m => m.Title);
+                    break;
+                default:
+                    items = items.OrderByDescending(m => m.Id);
+                    break;
+            }
+
+            items = items.Skip(pageIndex * pageSize).Take(pageSize);
+
+            return (await items.ToListAsync(), totalCount);
         }
     }
 }
