@@ -44,22 +44,33 @@
         else
         {
             <table class="table table-bordered table-hover">
+                <colgroup>
+                    <col style="width: 50px;" />
+                    <col style="width: 300px;"/>
+                    <col style="width: 100px;"/>
+                    <col style="width: 100px;"/>
+                    <col style="width: 100px;"/>
+                    <col style="width: 200px;"/>
+                    <col style="width: 200px;"/>
+                    <col style="width: auto;"/>
+                </colgroup>
                 <thead class="thread-light">
                     <tr>
-                        <th>ID</th>
-                        <th @onclick="@(() => SortByName())">Name <SortOrderArrow SortColumn="Name" SortOrder="@sortOrder"></SortOrderArrow></th>
-                        <th @onclick="@(() => SortByTitle())">Title <SortOrderArrow SortColumn="Title" SortOrder="@sortOrder"></SortOrderArrow></th>
-                        <th>Created</th>
-                        <th>IsPinned</th>
-                        <th>Action</th>
-                        <th>Admin</th>
+                        <th class="text-center">ID</th>
+                        <th class="text-center text-nowrap" style="cursor: pointer;" @onclick="@(() => SortByTitle())">Title <SortOrderArrow SortColumn="Title" SortOrder="@sortOrder"></SortOrderArrow></th>
+                        <th class="text-center text-nowrap" style="cursor: pointer;" @onclick="@(() => SortByName())">Name <SortOrderArrow SortColumn="Name" SortOrder="@sortOrder"></SortOrderArrow></th>
+                        <th class="text-center text-nowrap">Created</th>
+                        <th class="text-center text-nowrap">ReadCount</th>
+                        <th class="text-center text-nowrap">Action</th>
+                        <th class="text-center text-nowrap">Admin</th>
+                        <th class="text-center text-nowrap">&nbsp;</th>
                     </tr>
                 </thead>
                 @if (models.Count == 0)
                 {
                     <tbody>
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="8" class="text-center">
                                 <p>데이터가 없습니다.</p>
                             </td>
                         </tr>
@@ -69,33 +80,54 @@
                     @foreach (var m in models)
                     {
                         <tr>
-                            <td>@m.Id</td>
-                            <td @onclick="@(() => NameClick(m.Id))">
-                                <a href="/Notices/Details/@m.Id">
-                                    @m.Name
-                                </a>
+                            <td class="text-center small">
+                                @if (m.Step == 0)
+                                {
+                                    @m.Id
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
                             </td>
-                            <td>@m.Title</td>
-                            <td>@m.Created.ToShortTimeString()</td>
-                            <td>@(m.IsPinned == true ? "공지" : "")</td>
+                            <td style="cursor: pointer;"  @onclick="@(() => NameClick(m.Id))">
+                                <span class="btn-link">@m.Title</span>                                
+                            </td>
+                            <td>@m.Name</td>
+                            <td class="text-center text-nowrap small">
+                                @if (m.Created.Date == DateTime.Today)
+                                {
+                                    @m.Created.ToShortTimeString()
+                                }
+                                else
+                                {
+                                    @m.Created.ToShortDateString()
+                                }
+
+                            </td>
+                            <td class="text-center small">@m.ReadCount</td>
                             <td>
-                                <a href="/Notices/Details/@m.Id" class="btn btn-light">Details</a>
-                                <a href="/Notices/Edit/@m.Id" class="btn btn-light">Edit</a>
-                                <a href="/Notices/Delete/@m.Id" class="btn btn-light">Delete</a>
+                                <a href="/Notices/Details/@m.Id" class="btn btn-light btn-sm">Details</a>
+                                <a href="/Notices/Edit/@m.Id" class="btn btn-light btn-sm">Edit</a>
+                                <a href="/Notices/Delete/@m.Id" class="btn btn-light btn-sm">Delete</a>
                             </td>
                             <td>
-                                <input type="button" name="btnEdit" value="Edit with Modal"
-                               class="btn btn-primary"
+                                <input type="button" name="btnEdit" value="Edit"
+                               class="btn btn-primary btn-sm"
                                @onclick="(() => EditBy(m))" />
-                                <input type="button" name="btnDelete" value="Delete with Modal"
-                               class="btn btn-danger"
+                                <input type="button" name="btnDelete" value="Delete"
+                               class="btn btn-danger btn-sm"
                                @onclick="(() => DeleteBy(m))" />
-                                <input type="button" name="btnToggle" value="Pinned with Modal"
-                               class="btn btn-primary"
+                                <input type="button" name="btnToggle" value="Pinned"
+                               class="btn btn-primary btn-sm"
                                @onclick="(() => ToggleBy(m))" />
-                               <input type="button" name="btnDownload" value="Download"
-                                   class="btn btn-primary" @onclick="(() => DownloadBy(m))"/>
+                               @if (m.FileSize > 0)
+                                {
+                                <input type="button" name="btnDownload" value="Download"
+                                class="btn btn-primary btn-sm" @onclick="(() => DownloadBy(m))" />                                    
+                                }
                             </td>
+                            <td>&nbsp;</td>
                         </tr>
                     }
                 </tbody>

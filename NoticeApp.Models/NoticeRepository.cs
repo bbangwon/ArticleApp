@@ -64,12 +64,20 @@ namespace NoticeApp.Models
                 .ToListAsync();
         }
 
-        public Task<Notice?> GetByIdAsync(int id)
+        public async Task<Notice?> GetByIdAsync(int id)
         {
-            return this.dbContext.Notices
+            var model = await this.dbContext.Notices
                 //.Include(m => m.NoticesComments)
                 .FindAsync(id)
                 .AsTask();
+
+            if(model != null)
+            {
+                model.ReadCount++;
+                await UpdateAsync(model);
+            }
+
+            return model;
         }
 
         public Task<int> GetTotalRecordsCountByParentIdAsync(int parentId)

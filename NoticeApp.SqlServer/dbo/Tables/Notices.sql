@@ -15,6 +15,8 @@
 	[ModifiedBy] NVARCHAR(255) NULL,
 	[Modified] DATETIME2 NULL,
 
+	[ReadCount] INT DEFAULT 0,
+
 	[FileName] NVARCHAR(255) NULL,
 	[FileSize] INT DEFAULT 0,
 	[DownCount] INT DEFAULT 0,

@@ -24,6 +24,8 @@ namespace NoticeApp.Models
 
         public bool? IsPinned { get; set; } = false;
 
+        public int ReadCount { get; set; }
+
 
         [Display(Name = "파일")]
         public string? FileName { get; set; }
